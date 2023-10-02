@@ -17,9 +17,38 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      channels:
+        request: request-channel
+        create-request: create-request-channel
+        open-request: open-request-channel
+        update-request: update-request-channel
+        execute-request: execute-request
+
+thread-pools:
+  exceed:
+    core: 10
+    max: 15
+    alive-time: 5000
+    queue: 10000
+  create:
+    core: 10
+    max: 15
+    alive-time: 5000
+    queue: 10000
+
 server:
   port: 8090
 
 logging:
   level:
     root: info
+
+request:
+  schedule:
+    period: 10000
+  max-number-of-requests: 50
+  number-of-requests-for-executing: 10000
