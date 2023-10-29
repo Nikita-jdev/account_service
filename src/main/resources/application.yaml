@@ -44,3 +44,6 @@ server:
 logging:
   level:
     root: info
+
+executor:
+  thread-pool-size: 10

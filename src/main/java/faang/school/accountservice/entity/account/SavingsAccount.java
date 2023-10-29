@@ -10,6 +10,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Data
@@ -17,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "savings_account")
+@EntityListeners(AuditingEntityListener.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SavingsAccount {
     @Id
@@ -38,11 +42,13 @@ public class SavingsAccount {
     @Enumerated(EnumType.ORDINAL)
     private AccountStatus accountStatus;
 
+    @CreatedDate
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @LastModifiedDate
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at", nullable = false)
@@ -52,6 +58,7 @@ public class SavingsAccount {
     @Column(name = "closed_at")
     private LocalDateTime closedAt;
 
+    @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "last_update_calculation_at")
     private LocalDateTime lastUpdateCalculationAt;

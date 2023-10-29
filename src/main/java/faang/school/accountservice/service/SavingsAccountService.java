@@ -1,5 +1,6 @@
 package faang.school.accountservice.service;
 
+import faang.school.accountservice.dto.SavingsAccountDto;
 import faang.school.accountservice.dto.TariffDto;
 import faang.school.accountservice.entity.Owner;
 import faang.school.accountservice.entity.SavingsAccountTariffHistory;
@@ -10,18 +11,17 @@ import faang.school.accountservice.entity.account.AccountType;
 import faang.school.accountservice.entity.account.Currency;
 import faang.school.accountservice.entity.account.SavingsAccount;
 import faang.school.accountservice.exception.EntityNotFoundException;
-import faang.school.accountservice.exception.TariffNotFoundException;
 import faang.school.accountservice.mapper.SavingsAccountMapper;
+import faang.school.accountservice.repository.AccountRepository;
 import faang.school.accountservice.repository.SavingsAccountRepository;
 import faang.school.accountservice.repository.SavingsAccountTariffHistoryRepository;
-import faang.school.accountservice.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import faang.school.accountservice.dto.SavingsAccountDto;
+
 import java.time.LocalDateTime;
 
 @Service
@@ -86,15 +86,15 @@ public class SavingsAccountService {
     }
 
     @Transactional(readOnly = true)
-    public TariffDto getCurrentTariffAndRateByClientId(Long clientId) {
-        SavingsAccount savingsAccount = savingsAccountRepository.findById(clientId)
+    public TariffDto getCurrentTariffAndRateByClientId(Long savingsAccountId) {
+        SavingsAccount savingsAccount = savingsAccountRepository.findById(savingsAccountId)
                 .orElseThrow(() -> new RuntimeException("Savings account not found"));
 
         SavingsAccountTariffHistory latestTariffHistory =
                 savingsAccountTariffHistoryRepository.findTopBySavingsAccountOrderByChangeDateDesc(savingsAccount);
 
         if (latestTariffHistory == null) {
-            throw new TariffNotFoundException("Tariff history is not available or has not been created yet");
+            return null;
         } else {
             Tariff tariff = latestTariffHistory.getTariff();
 

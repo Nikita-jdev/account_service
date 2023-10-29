@@ -1,16 +1,18 @@
 package faang.school.accountservice.service;
 
-import faang.school.accountservice.repository.SavingsAccountTariffHistoryRepository;
-import faang.school.accountservice.validator.TariffValidator;
 import faang.school.accountservice.dto.TariffDto;
+import faang.school.accountservice.entity.Owner;
 import faang.school.accountservice.entity.Tariff;
 import faang.school.accountservice.exception.TariffNotFoundException;
 import faang.school.accountservice.mapper.TariffMapper;
+import faang.school.accountservice.repository.OwnerRepository;
 import faang.school.accountservice.repository.TariffRepository;
+import faang.school.accountservice.validator.TariffValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TariffService {
     private final TariffRepository tariffRepository;
-    private final SavingsAccountTariffHistoryRepository historyRepository;
+    private final OwnerRepository ownerRepository;
     private final TariffValidator tariffValidator;
     private final TariffMapper tariffMapper;
 
@@ -58,7 +60,9 @@ public class TariffService {
         Tariff existingTariff = tariffRepository.findById(id)
                 .orElseThrow(() -> new TariffNotFoundException("Tariff not found"));
 
-        existingTariff.setTariffType(tariffDto.getTariffType());
+        if (existingTariff.getTariffType() != tariffDto.getTariffType()) {
+            throw new IllegalArgumentException("Tariff type cannot be changed");
+        }
 
         List<BigDecimal> newRates = new ArrayList<>();
         newRates.add(tariffDto.getRate());
@@ -80,11 +84,19 @@ public class TariffService {
         tariffRepository.save(existingTariff);
     }
 
+    @Transactional
     public void deleteTariff(Long id) {
         log.info("Deleting tariff with ID: {}", id);
-        Tariff tariff = tariffRepository.findById(id)
-                .orElseThrow(() -> new TariffNotFoundException("Tariff with ID " + id + " not found"));
 
-        tariffRepository.delete(tariff);
+        Tariff tariff = tariffRepository.findById(id).orElse(null);
+
+        if (tariff != null && !isTariffInUse(tariff)) {
+            tariffRepository.delete(tariff);
+        }
+    }
+
+    private boolean isTariffInUse(Tariff tariff) {
+        List<Owner> usersWithTariff = ownerRepository.findByTariff(tariff);
+        return !usersWithTariff.isEmpty();
     }
 }
