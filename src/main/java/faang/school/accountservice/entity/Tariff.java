@@ -26,4 +26,7 @@ public class Tariff {
     @ElementCollection
     @CollectionTable(name = "tariff_rates", joinColumns = @JoinColumn(name = "tariff_id"))
     private List<BigDecimal> rates;
+
+    @OneToMany(mappedBy = "tariff")
+    private List<Owner> owners;
 }

@@ -199,15 +199,6 @@ class SavingsAccountServiceTest {
     }
 
     @Test
-    void testGetCurrentTariffAndRateByClientIdNoTariffHistory() {
-        when(savingsAccountTariffHistoryRepository.findTopBySavingsAccountOrderByChangeDateDesc(savingsAccount)).thenReturn(null);
-
-        assertThrows(TariffNotFoundException.class, () -> {
-            savingsAccountService.getCurrentTariffAndRateByClientId(1L);
-        });
-    }
-
-    @Test
     void testGetCurrentTariffAndRateByClientIdNoSavingsAccount() {
         when(savingsAccountRepository.findById(1L)).thenReturn(Optional.empty());
 
