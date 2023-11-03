@@ -1,10 +1,7 @@
 package faang.school.accountservice.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,11 +9,12 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
+@Getter
+@Setter
 @Table(name = "balances")
 public class Balance {
 
