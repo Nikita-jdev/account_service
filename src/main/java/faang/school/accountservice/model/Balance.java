@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,6 +31,9 @@ public class Balance {
 
     @Column(name = "actual_balance", nullable = false)
     private BigDecimal actualBalance;
+
+    @OneToMany(mappedBy = "balance", fetch = FetchType.LAZY)
+    private List<BalanceHistory> history;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
