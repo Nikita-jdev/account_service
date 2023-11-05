@@ -17,6 +17,14 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      channels:
+        account_channel:
+          name: account_channel
+
 server:
   port: 8090
 
@@ -32,3 +40,12 @@ user-service:
   host: localhost
   port: 8080
   url: localhost:8080/api/v1
+
+account-generation:
+  amountToGenerate: 500
+  retryDelay: 3000
+
+account-executor:
+  unique-batch: 100
+  thread-pool-size: 5
+  thread-queue: 100

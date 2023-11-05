@@ -1,8 +1,9 @@
 package faang.school.accountservice.model;
 
-import faang.school.accountservice.enums.AccountStatus;
+import faang.school.accountservice.entity.Request;
 import faang.school.accountservice.enums.AccountType;
-import jakarta.persistence.CascadeType;
+import faang.school.accountservice.enums.RequestHandler;
+import faang.school.accountservice.enums.RequestStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,8 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -24,58 +24,40 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
-import java.util.Currency;
-import java.util.List;
+import java.time.ZonedDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "account")
-public class Account {
+@Table(name = "request_task")
+public class RequestTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "number", unique = true, nullable = false, length = 20)
-    private String number;
+    @ManyToOne
+    @JoinColumn(name = "request_id", referencedColumnName = "idempotentToken")
+    private Request request;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private Owner owner;
-
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Balance balance;
-
-    @Column(name = "type", nullable = false)
+    @Column(name = "handler", nullable = false)
     @Enumerated(EnumType.ORDINAL)
-    private AccountType type;
+    private RequestHandler handler;
 
-    @OneToMany(mappedBy="account", cascade = CascadeType.ALL)
-    private List<BalanceAudit> balanceAudits;
-
-    @Column(name = "currency", nullable = false, length = 3)
-    private Currency currency;
-
-    @Column(name = "status", columnDefinition = "smallint default 0")
+    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.ORDINAL)
-    private AccountStatus status;
+    private RequestStatus status;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "closed_at")
-    private LocalDateTime closedAt;
+    private ZonedDateTime updatedAt;
 
     @Version
     @Column(name = "version")
