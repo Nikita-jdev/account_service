@@ -1,5 +1,6 @@
 package faang.school.accountservice.exception.handler;
 
+import faang.school.accountservice.exception.BalanceException;
 import faang.school.accountservice.exception.DataValidationException;
 import faang.school.accountservice.exception.IdempotencyException;
 import faang.school.accountservice.exception.LockedRequestException;
@@ -36,6 +37,14 @@ public class GlobalExceptionHandler {
         log.error("Entity not found exception occurred", e);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler(BalanceException.class)
+    public ResponseEntity<String> handleBalanceException(BalanceException e) {
+        log.warn("BalanceException", e);
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(e.getMessage());
     }
 

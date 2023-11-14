@@ -7,7 +7,7 @@ CREATE TABLE balance_audit
     operation_id bigint,
     created_at timestamptz NOT NULL,
 
-    PRIMARY KEY (balance_id, balance_audit_version)
+    PRIMARY KEY (balance_id, balance_audit_version),
     CONSTRAINT fk_account_id FOREIGN KEY (balance_id) REFERENCES balance (id)
 );
 
