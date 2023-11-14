@@ -56,8 +56,6 @@ class SavingsAccountControllerTest {
     @Autowired
     private TariffHistoryRepository tariffHistoryRepository;
 
-    private SavingsAccount savingsAccount;
-
     private final String accountNumber = "55360000000000000001";
 
     @Container
@@ -109,6 +107,7 @@ class SavingsAccountControllerTest {
                         jsonPath("$.tariffDto.type").value("PROMO"),
                         jsonPath("$.tariffDto.ratePercent").value(1.7)
                 );
+
         TariffHistory tariffHistory = tariffHistoryRepository.findById(2L).orElse(null);
         assertNotNull(tariffHistory);
     }
@@ -151,17 +150,38 @@ class SavingsAccountControllerTest {
     }
 
     @Test
-    public void getSavingsAccountByIdTest() throws Exception {
+    public void addFundsToSavingsAccountTest() throws Exception {
         initGetEndpoint();
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/savings/account/{id}", 3))
+        String jsonRequestBody = "{\"savingsAccountId\": 3, \"moneyAmount\": 137.35}";
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/savings/account/funds")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequestBody))
                 .andExpectAll(
                         jsonPath("$.id").value(3),
                         jsonPath("$.accountNumber").value(accountNumber),
-                        jsonPath("$.balance").value(0),
+                        jsonPath("$.balance").value(137.35),
                         jsonPath("$.accountId").value(3),
-                        jsonPath("$.version").value(1),
+                        jsonPath("$.version").value(2),
                         jsonPath("$.tariffDto.id").value(4),
+                        jsonPath("$.tariffDto.type").value("BASIC"),
+                        jsonPath("$.tariffDto.ratePercent").value(3.5)
+                );
+    }
+
+    @Test
+    public void getSavingsAccountByIdTest() throws Exception {
+        initGetEndpoint();
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/savings/account/{id}", 4))
+                .andExpectAll(
+                        jsonPath("$.id").value(4),
+                        jsonPath("$.accountNumber").value(accountNumber),
+                        jsonPath("$.balance").value(0),
+                        jsonPath("$.accountId").value(4),
+                        jsonPath("$.version").value(1),
+                        jsonPath("$.tariffDto.id").value(5),
                         jsonPath("$.tariffDto.type").value("BASIC"),
                         jsonPath("$.tariffDto.ratePercent").value(3.5)
                 );
@@ -176,37 +196,16 @@ class SavingsAccountControllerTest {
                         .param("ownerType", "USER")
                 )
                 .andExpectAll(
-                        jsonPath("$.id").value(4),
+                        jsonPath("$.id").value(5),
                         jsonPath("$.accountNumber").value(accountNumber),
                         jsonPath("$.balance").value(0),
-                        jsonPath("$.accountId").value(4),
+                        jsonPath("$.accountId").value(5),
                         jsonPath("$.version").value(1),
-                        jsonPath("$.tariffDto.id").value(5),
+                        jsonPath("$.tariffDto.id").value(6),
                         jsonPath("$.tariffDto.type").value("BASIC"),
                         jsonPath("$.tariffDto.ratePercent").value(3.5)
                 );
     }
-
-//    @Test
-//    public void addFundsToSavingsAccountTest() throws Exception {
-//        initGetEndpoint();
-//
-//        String jsonRequestBody = "{\"savingsAccountId\": 5, \"moneyAmount\": 137.35}";
-//
-//        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/savings/account/funds")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(jsonRequestBody))
-//                .andExpectAll(
-//                        jsonPath("$.id").value(5),
-//                        jsonPath("$.accountNumber").value(accountNumber),
-//                        jsonPath("$.balance").value(137.35),
-//                        jsonPath("$.accountId").value(5),
-//                        jsonPath("$.version").value(2),
-//                        jsonPath("$.tariffDto.id").value(6),
-//                        jsonPath("$.tariffDto.type").value("BASIC"),
-//                        jsonPath("$.tariffDto.ratePercent").value(3.5)
-//                );
-//    }
 
     private void initPutEndpoint() {
         Tariff basic = Tariff.builder()
@@ -263,6 +262,7 @@ class SavingsAccountControllerTest {
                 .status(AccountStatus.OPEN)
                 .currency(Currency.USD)
                 .build();
+
         accountRepository.save(secondAccount);
         tariffRepository.save(basic);
         rateRepository.save(basicRate);

@@ -38,6 +38,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -58,6 +59,8 @@ class SavingsAccountServiceTest {
     private SavingsAccountResponseMapper responseMapper = new SavingsAccountResponseMapperImpl(tariffMapper);
     @Mock
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Mock
+    private FreeAccountNumbersService freeAccountNumbersService;
     @InjectMocks
     private SavingsAccountService savingsAccountService;
 
@@ -173,8 +176,16 @@ class SavingsAccountServiceTest {
 
     @Test
     void openSavingsAccountTest() {
+        responseDto.setAccountNumber(accountNumber);
+        responseDto.setBalance(BigDecimal.ZERO);
+        savingsAccountWithoutHistory.setAccountNumber(accountNumber);
+        savingsAccountWithoutHistory.setBalance(BigDecimal.ZERO);
+        savingsAccountWithHistory.setAccountNumber(accountNumber);
+        savingsAccountWithHistory.setBalance(BigDecimal.ZERO);
+
         when(accountService.getAccountById(2)).thenReturn(account);
         when(tariffService.assignTariffToSavingsAccount(savingsAccountWithoutHistory, TariffType.BASIC)).thenReturn(historyWithBasicTariff);
+        when(freeAccountNumbersService.getNumber(any(AccountType.class), any())).thenReturn(accountNumber);
 
         SavingsAccountResponseDto result = savingsAccountService.openSavingsAccount(createDto);
 

@@ -168,8 +168,8 @@ public class SavingsAccountService {
         account.setBalance(newBalance);
     }
 
-    private void validateRequestMoneyAmount(BigDecimal moneyAmount){
-        if (moneyAmount.compareTo(BigDecimal.ZERO) < 0){
+    private void validateRequestMoneyAmount(BigDecimal moneyAmount) {
+        if (moneyAmount.compareTo(BigDecimal.ZERO) < 0) {
             throw new DataValidationException("The amount you are trying to deposit into the savings account must be greater than zero");
         }
     }
