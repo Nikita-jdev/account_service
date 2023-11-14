@@ -44,6 +44,9 @@ public class Account {
     @Column(name = "account_type", nullable = false)
     private AccountType accountType;
 
+    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
+    private SavingsAccount savingsAccount;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "currency", nullable = false, length = 3)
     private Currency currency;

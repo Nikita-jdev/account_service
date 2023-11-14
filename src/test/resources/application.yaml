@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: user
+    password: password
+
+user-service:
+  host: localhost
+  port: 8080
+project-service:
+  host: localhost
+  port: 8082
+
+account-numbers:
+  generation_delay: 100000
+  max_retry_count: 5
+  number_length: 20
+  type_code_length: 4
+  account_numbers_buffer_size: 10
+  type_codes:
+    SAVINGS: 5536
+    DEBIT: 4276
+    CURRENCY: 2060
+    CREDIT: 7781
+    DEPOSIT: 5478
+
+async:
+  thread-pool:
+    settings:
+      core-pool-size: 4
+      max-pool-size: 10
+      queue-capacity: 100
+
+scheduler:
+  savings-account:
+    rate-calculation:
+      cron: 0 0 * * * *
+      batch-size: 10
