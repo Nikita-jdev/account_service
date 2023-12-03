@@ -13,17 +13,10 @@ import lombok.*;
 @Table(name = "account_number_sequence")
 public class AccountNumberSequence {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "account_type", nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "account_type", nullable = false, length = 32)
     private AccountType accountType;
 
-    @Column(name = "current_count", nullable = false)
+    @Column(name = "current_count", nullable = false, length = 32)
     private Long currentCount;
-
-    @Version
-    private Long version;
 }

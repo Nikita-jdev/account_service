@@ -15,16 +15,17 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "free_account_numbers")
 public class FreeAccountNumber {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "account_type", nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "account_type", nullable = false, length = 32)
     private AccountType accountType;
 
-    @Column(name = "account_number", nullable = false, unique = true, length = 20)
+    @Column(name = "account_number", nullable = false, unique = true, length = 32)
     private String accountNumber;
 
     @CreationTimestamp

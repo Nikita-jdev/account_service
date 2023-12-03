@@ -11,14 +11,14 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface FreeAccountNumbersRepository extends JpaRepository<FreeAccountNumber, Long> {
+public interface FreeAccountNumbersRepository extends JpaRepository<FreeAccountNumber, String> {
 
     long countByAccountType(AccountType accountType);
 
     @Query(nativeQuery = true, value = """
             DELETE FROM free_account_numbers
-            WHERE account_type = (
-            SELECT account_type
+            WHERE account_number = (
+            SELECT account_number
             FROM free_account_numbers
             WHERE account_type = :accountType
             ORDER BY created_at ASC
@@ -26,5 +26,5 @@ public interface FreeAccountNumbersRepository extends JpaRepository<FreeAccountN
             RETURNING account_number
             """)
     @Modifying
-    Optional<String> deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(@Param("accountType") int accountType);
+    Optional<String> deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(@Param("accountType") String accountType);
 }

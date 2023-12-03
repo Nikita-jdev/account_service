@@ -9,10 +9,10 @@ import faang.school.accountservice.repository.FreeAccountNumbersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,59 +28,59 @@ public class FreeAccountNumbersService {
 
 
     @Transactional
-    @Retryable(retryFor = {OptimisticLockingFailureException.class})
     public void generateAccountNumbersOfType(long numberOfAccounts, AccountType accountType) {
         createListAccountNumbers(numberOfAccounts, accountType);
     }
 
     @Transactional
-    @Retryable(retryFor = {OptimisticLockingFailureException.class})
     public void generateAccountNumbersToReach(long targetCount, AccountType accountType) {
 
         long currentCount = freeAccountNumbersRepository.countByAccountType(accountType);
-        long remainingCount = targetCount - currentCount;
+        long batchSize = targetCount - currentCount;
 
-        if (remainingCount > 0) {
-            createListAccountNumbers(remainingCount, accountType);
+        if (batchSize > 0) {
+            createListAccountNumbers(batchSize, accountType);
         }
     }
 
-    private void createListAccountNumbers(long remainingCount, AccountType accountType) {
+    private void createListAccountNumbers(long batchSize, AccountType accountType) {
         int accountNumberLength = accountGenerationConfig.getAccountNumberLength();
 
-        List<String> newAccountNumbers = LongStream.range(0, remainingCount)
-                .mapToObj(i -> generateAccountNumber(accountType, accountNumberLength)).toList();
+        List<String> newAccountNumbers = generateAccountNumber(accountType, accountNumberLength, batchSize);
 
         List<FreeAccountNumber> accountNumbers = newAccountNumbers.stream()
                 .map(accountNumber -> FreeAccountNumber.builder()
                         .accountType(accountType)
                         .accountNumber(accountNumber)
-                        .build()).collect(Collectors.toList());
+                        .createdAt(LocalDateTime.now())
+                        .build())
+                .collect(Collectors.toList());
         freeAccountNumbersRepository.saveAll(accountNumbers);
     }
 
-    private String generateAccountNumber(AccountType accountType, int length) {
+    private List<String> generateAccountNumber(AccountType accountType, int length, long batchSize) {
         String prefix = accountType.getFirstNumberOfAccount();
 
         long currentCount = getOrCreateSequence(accountType);
-        accountNumbersSequenceRepository.incrementByAccountType(accountType.ordinal());
+        accountNumbersSequenceRepository.incrementByAccountType(accountType.name(), batchSize);
 
-        return prefix + String.format("%0" + (length - prefix.length()) + "d", currentCount);
+        return LongStream.range(1, batchSize + 1)
+                .mapToObj(i -> prefix + String.format("%0" + (length - prefix.length()) + "d", currentCount + i))
+                .collect(Collectors.toList());
     }
 
     public Long getOrCreateSequence(AccountType accountType) {
         return accountNumbersSequenceRepository
-                .getCurrentCountByAccountType(accountType.ordinal())
+                .getCurrentCountByAccountType(accountType.name())
                 .orElseGet(() -> {
-                    accountNumbersSequenceRepository.createAccountNumberSequence(accountType.ordinal());
+                    accountNumbersSequenceRepository.createAccountNumberSequence(accountType.name());
                     return accountNumbersSequenceRepository
-                            .getCurrentCountByAccountType(accountType.ordinal())
+                            .getCurrentCountByAccountType(accountType.name())
                             .orElse(null);
                 });
     }
 
     @Transactional
-    @Retryable(retryFor = {OptimisticLockingFailureException.class})
     public String getFreeAccountNumber(AccountType accountType) {
         try {
             Optional<String> accountNumber = findFirstFreeAccountNumber(accountType);
@@ -96,11 +96,11 @@ public class FreeAccountNumbersService {
     }
 
     private Optional<String> findFirstFreeAccountNumber(AccountType accountType) {
-        Optional<String> accountNumber = freeAccountNumbersRepository.deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.ordinal());
+        Optional<String> accountNumber = freeAccountNumbersRepository.deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.name());
         if (accountNumber.isEmpty()) {
             generateAdditionalAccountNumbers(accountType);
             log.warn("No free account numbers. Generated additional account numbers for {}.", accountType);
-            accountNumber = freeAccountNumbersRepository.deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.ordinal());
+            accountNumber = freeAccountNumbersRepository.deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.name());
         }
         return accountNumber;
     }

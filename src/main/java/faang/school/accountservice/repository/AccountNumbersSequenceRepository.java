@@ -10,26 +10,26 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface AccountNumbersSequenceRepository extends JpaRepository<AccountNumberSequence, Long> {
+public interface AccountNumbersSequenceRepository extends JpaRepository<AccountNumberSequence, String> {
     @Query(nativeQuery = true, value = """
             INSERT INTO account_number_sequence (account_type, current_count)
             VALUES (:accountType, 0)
             """)
     @Modifying
-    void createAccountNumberSequence(@Param("accountType") int accountType);
+    void createAccountNumberSequence(@Param("accountType") String accountType);
 
     @Query(nativeQuery = true, value = """
-            SELECT current_count 
-            FROM account_number_sequence 
+            SELECT current_count
+            FROM account_number_sequence
             WHERE account_type = :accountType
             """)
-    Optional<Long> getCurrentCountByAccountType(@Param("accountType") int accountType);
+    Optional<Long> getCurrentCountByAccountType(@Param("accountType") String accountType);
 
     @Query(nativeQuery = true, value = """
             UPDATE account_number_sequence
-            SET current_count = current_count + 1
+            SET current_count = current_count + :batchSize
             WHERE account_type = :accountType
             """)
     @Modifying
-    void incrementByAccountType(@Param("accountType") int accountType);
+    void incrementByAccountType(@Param("accountType") String accountType, @Param("batchSize") long batchSize);
 }

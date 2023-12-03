@@ -51,7 +51,7 @@ class FreeAccountNumbersServiceTest {
     void generateAccountNumbersOfType_shouldSaveAllFreeAccountNumbers() {
         when(accountGenerationConfig.getAccountNumberLength()).thenReturn(20);
         when(freeAccountNumbersRepository.saveAll(anyList())).thenReturn(new ArrayList<>());
-        when(accountNumbersSequenceRepository.getCurrentCountByAccountType(anyInt())).thenReturn(Optional.of(1L));
+        when(accountNumbersSequenceRepository.getCurrentCountByAccountType(anyString())).thenReturn(Optional.of(1L));
 
         freeAccountNumbersService.generateAccountNumbersOfType(targetCountAccounts, accountType);
 
@@ -62,7 +62,7 @@ class FreeAccountNumbersServiceTest {
     void generateAccountNumbersToReach_shouldSaveAllFreeAccountNumbers() {
         when(accountGenerationConfig.getAccountNumberLength()).thenReturn(20);
         when(freeAccountNumbersRepository.saveAll(anyList())).thenReturn(new ArrayList<>());
-        when(accountNumbersSequenceRepository.getCurrentCountByAccountType(anyInt())).thenReturn(Optional.of(1L));
+        when(accountNumbersSequenceRepository.getCurrentCountByAccountType(anyString())).thenReturn(Optional.of(1L));
 
         freeAccountNumbersService.generateAccountNumbersToReach(targetCountAccounts, accountType);
 
@@ -71,7 +71,7 @@ class FreeAccountNumbersServiceTest {
 
     @Test
     void getFreeAccountNumber() {
-        when(freeAccountNumbersRepository.deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.ordinal()))
+        when(freeAccountNumbersRepository.deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.name()))
                 .thenReturn(Optional.empty());
 
         assertThrows(NoFreeAccountNumbersException.class, () -> freeAccountNumbersService.getFreeAccountNumber(accountType));
@@ -79,19 +79,19 @@ class FreeAccountNumbersServiceTest {
 
     @Test
     void testGetFreeAccountNumberWhenNumbersAvailable() {
-        when(freeAccountNumbersRepository.deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.ordinal()))
+        when(freeAccountNumbersRepository.deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.name()))
                 .thenReturn(Optional.of(accountNumber));
 
         String accountNumber = freeAccountNumbersService.getFreeAccountNumber(accountType);
 
         assertEquals(freeAccountNumber.getAccountNumber(), accountNumber);
 
-        verify(freeAccountNumbersRepository).deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.ordinal());
+        verify(freeAccountNumbersRepository).deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.name());
     }
 
     @Test
     void testGetFreeAccountNumberWhenNoNumbersAvailable() {
-        when(freeAccountNumbersRepository.deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.ordinal()))
+        when(freeAccountNumbersRepository.deleteAndReturnFirstByAccountTypeOrderByCreatedAtAsc(accountType.name()))
                 .thenReturn(Optional.empty());
 
         assertThrows(NoFreeAccountNumbersException.class, () -> freeAccountNumbersService.getFreeAccountNumber(accountType));
