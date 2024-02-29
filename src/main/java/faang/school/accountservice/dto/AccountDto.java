@@ -3,8 +3,6 @@ package faang.school.accountservice.dto;
 import faang.school.accountservice.enums.AccountType;
 import faang.school.accountservice.enums.Currency;
 import faang.school.accountservice.enums.Status;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -17,9 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AccountDto {
+
     private long id;
+
     @NotNull(message = "Owner id must not be null")
     private long ownerId;
+
     @Size(min = 12, max = 20, message = "account number length should be between 12 and 20")
     private String number;
 

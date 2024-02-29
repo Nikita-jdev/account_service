@@ -44,15 +44,15 @@ public class Account {
     @Column(name = "number", nullable = false, unique = true, length = 20)
     private String number;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "account_type")
     private AccountType type;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "currency")
     private Currency currency;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
 

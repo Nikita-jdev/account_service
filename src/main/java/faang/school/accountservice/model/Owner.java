@@ -24,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "onwer")
+@Table(name = "owner")
 public class Owner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,7 @@ public class Owner {
     @Column(name = "owner_id", nullable = false)
     private long owner_id;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "owner_type")
     private OwnerType ownerType;
 

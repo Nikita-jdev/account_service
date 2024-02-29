@@ -37,7 +37,7 @@ public class AccountController {
 
     @PostMapping("/block/{id}")
     public AccountDto block(@PathVariable long id,
-                            @RequestParam Status status) {
+                            @RequestParam("status") Status status) {
         return accountService.block(id, status);
     }
 }

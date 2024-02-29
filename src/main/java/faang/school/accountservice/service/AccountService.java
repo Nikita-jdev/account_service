@@ -43,6 +43,7 @@ public class AccountService {
     @Retryable(retryFor = OptimisticLockException.class)
     @Transactional
     public AccountDto block(long id, Status status) {
+        blockStatusValidate(status);
         Account account = getAccount(id);
         account.setStatus(status);
         return accountMapper.toDto(account);
@@ -51,5 +52,11 @@ public class AccountService {
     public Account getAccount(long id) {
         return accountRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException(String.format("Account doesn't exist by id: %s", id)));
+    }
+
+    public void blockStatusValidate(Status status) {
+        if (status != Status.BLOCKED && status != Status.SUSPENDED) {
+            throw new IllegalArgumentException("You can use only BLOCKED or SUSPENDED status");
+        }
     }
 }
