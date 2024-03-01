@@ -27,7 +27,6 @@ public class AccountDto {
     @NotNull(message = "Account type must not be null")
     private AccountType type;
 
-    @NotNull(message = "Status type must not be null")
     private Status status;
 
     @NotNull(message = "Currency type must not be null")
