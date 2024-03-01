@@ -23,3 +23,8 @@ server:
 logging:
   level:
     root: info
+
+scheduler:
+  number-generation:
+    cron: "0 22 * * *" # every day at 10pm
+    size_batch: 100
