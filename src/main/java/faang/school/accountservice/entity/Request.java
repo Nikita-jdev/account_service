@@ -1,13 +1,20 @@
 package faang.school.accountservice.entity;
 
+import faang.school.accountservice.config.converter.MapToStringConverter;
+import faang.school.accountservice.enums.OwnerType;
+import faang.school.accountservice.enums.RequestStatus;
+import faang.school.accountservice.enums.RequestType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.UUID;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 @Builder
@@ -18,39 +25,52 @@ import java.time.LocalDateTime;
 public class Request {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @UUID
+    @Column(name = "token", nullable = false, unique = true)
     private String token;
 
-    @Column(name = "user_id", nullable = false, unique = true)
-    private long user_id;
+    @Column(name = "owner_id", nullable = false, unique = true)
+    private long ownerId;
 
-    @Column(name = "request_type", length = 60, nullable = false)
-    private String request_type;
+    @Column(name = "owner_type",length = 7,nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OwnerType ownerType;
+
+    @Column(name = "request_type", length = 64, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RequestType requestType;
 
     @Column(name = "lock_value", nullable = false)
-    private long lock_value;
+    private long lockValue;
 
     @Column(name = "is_open")
-    private boolean is_open;
+    private boolean isOpen;
 
     @Column(name = "request_data", nullable = false)
-    private String request_data;
+    @Convert(converter = MapToStringConverter.class)
+    private Map<String,String> requestData;
 
     @Column(name = "request_status", length = 60, nullable = false)
-    private String request_status;
+    @Enumerated(EnumType.STRING)
+    private RequestStatus requestStatus;
 
-    @Column(name = "addit_status")
-    private String addit_status;
+    @Column(name = "addit_status", length = 128)
+    private String statusDetails;
 
-    @UpdateTimestamp
+    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
-    @Column(name = "version")
+    @Version
+    @Column(name = "version", nullable = false)
     private int version;
 }
