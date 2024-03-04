@@ -1,21 +1,25 @@
 -- Write your sql migration here!
 CREATE TABLE owner (
-id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY UNIQUE,
-owner_id bigint UNIQUE NOT NULL,
-owner_type smallint NOT NULL,
-created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-updated_at timestamptz DEFAULT CURRENT_TIMESTAMP
+id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY UNIQUE,
+owner_id BIGINT NOT NULL,
+owner_type SMALLINT NOT NULL,
+created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE account (
-id bigint PRIMARY KEY generated always AS IDENTITY UNIQUE,
-account_number varchar (20) NOT NULL UNIQUE,
-account_owner bigint REFERENCES owner(id),
-account_type varchar (32),
-currency varchar (3) NOT NULL,
-status varchar (16),
-created_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-updated_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-closed_at timestamptz DEFAULT CURRENT_TIMESTAMP,
-version bigint
-)
+CREATE TABLE IF NOT EXISTS account(
+id BIGINT PRIMARY KEY generated always AS IDENTITY UNIQUE,
+account_number VARCHAR (20) CHECK (LENGTH(account_number) BETWEEN 12 AND 20) NOT NULL UNIQUE,
+account_owner BIGINT,
+account_type VARCHAR (32),
+currency VARCHAR (3) NOT NULL,
+status VARCHAR (16) NOT NULL,
+created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+closed_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+version BIGINT NOT NULL,
+
+CONSTRAINT fk_account_owner FOREIGN KEY (account_owner) REFERENCES owner (id)
+);
+
+CREATE INDEX owner_idx ON account (account_owner);
