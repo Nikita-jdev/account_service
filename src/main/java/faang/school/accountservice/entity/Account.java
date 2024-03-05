@@ -1,6 +1,8 @@
 package faang.school.accountservice.entity;
 
 import faang.school.accountservice.enums.Currency;
+import faang.school.accountservice.enums.Status;
+import faang.school.accountservice.enums.Type;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +33,7 @@ public class Account {
 
     @Column(name = "account_type", length = 32)
     @Enumerated(EnumType.STRING)
-    private String accountType;
+    private Type accountType;
 
     @Column(name = "currency", length = 3, nullable = false)
     @Enumerated(EnumType.STRING)
@@ -39,7 +41,7 @@ public class Account {
 
     @Column(name = "status", length = 16, nullable = false)
     @Enumerated(EnumType.STRING)
-    private String status;
+    private Status status;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
