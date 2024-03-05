@@ -54,4 +54,8 @@ public class Account {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "closed_at")
     private LocalDateTime closedAt;
+
+    @Column(name = "version", nullable = false)
+    @Version
+    private long version;
 }
