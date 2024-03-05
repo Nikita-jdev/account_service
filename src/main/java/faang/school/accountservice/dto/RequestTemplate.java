@@ -3,10 +3,7 @@ package faang.school.accountservice.dto;
 import faang.school.accountservice.enums.OwnerType;
 import faang.school.accountservice.enums.RequestStatus;
 import faang.school.accountservice.enums.RequestType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.lang.Nullable;
 
 @Data
@@ -14,6 +11,8 @@ import org.springframework.lang.Nullable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestTemplate {
+    @Setter(AccessLevel.NONE)
+    private long id; // нужно ли оно?
     private long ownerId;
     private OwnerType ownerType;
     private RequestType requestType;

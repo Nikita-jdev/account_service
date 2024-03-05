@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ObjectToMapConverter {
-    public static Map<String,String> convertObjectToMap(Object object){
-        Map<String, String> map = new HashMap<>();
+    public static Map<String,Object> convertObjectToMap(Object object){
+        Map<String, Object> map = new HashMap<>();
         Class<?> clazz = object.getClass();
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
@@ -18,7 +18,7 @@ public class ObjectToMapConverter {
                 throw new RuntimeException(e);
             }
             if (value != null) {
-                map.put(field.getName(), value.toString());
+                map.put(field.getName(), value);
             }
         }
         return map;

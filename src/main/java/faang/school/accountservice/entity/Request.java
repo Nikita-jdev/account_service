@@ -51,7 +51,7 @@ public class Request {
 
     @Column(name = "request_data", nullable = false)
     @Convert(converter = MapToStringConverter.class)
-    private Map<String,String> requestData;
+    private Map<String,Object> requestData;
 
     @Column(name = "request_status", length = 60, nullable = false)
     @Enumerated(EnumType.STRING)
