@@ -1,5 +1,6 @@
 package faang.school.accountservice.entity;
 
+import faang.school.accountservice.enums.Currency;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +35,7 @@ public class Account {
 
     @Column(name = "currency", length = 3, nullable = false)
     @Enumerated(EnumType.STRING)
-    private String currency;
+    private Currency currency;
 
     @Column(name = "status", length = 16, nullable = false)
     @Enumerated(EnumType.STRING)
