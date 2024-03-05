@@ -1,6 +1,7 @@
 package faang.school.accountservice.controller;
 
 import faang.school.accountservice.config.context.UserContext;
+import faang.school.accountservice.dto.AccountDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
