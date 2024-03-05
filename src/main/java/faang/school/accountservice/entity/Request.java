@@ -13,7 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.UUID;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Map;
 
 @Data
@@ -32,10 +32,10 @@ public class Request {
     @Column(name = "token", nullable = false, unique = true)
     private String token;
 
-    @Column(name = "owner_id", nullable = false, unique = true)
+    @Column(name = "owner_id", unique = true)
     private long ownerId;
 
-    @Column(name = "owner_type",length = 7,nullable = false)
+    @Column(name = "owner_type", length = 7, nullable = false)
     @Enumerated(EnumType.STRING)
     private OwnerType ownerType;
 
@@ -46,31 +46,30 @@ public class Request {
     @Column(name = "lock_value", nullable = false)
     private long lockValue;
 
-    @Column(name = "is_open")
+    @Column(name = "is_open", nullable = false)
     private boolean isOpen;
 
     @Column(name = "request_data", nullable = false)
     @Convert(converter = MapToStringConverter.class)
-    private Map<String,String> requestData;
+    private Map<String, String> requestData;
 
     @Column(name = "request_status", length = 60, nullable = false)
     @Enumerated(EnumType.STRING)
     private RequestStatus requestStatus;
 
-    @Column(name = "addit_status", length = 128)
+    @Column(name = "status_details", length = 128)
     private String statusDetails;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
 
     @Version
-    @Column(name = "version", nullable = false)
     private int version;
 }
