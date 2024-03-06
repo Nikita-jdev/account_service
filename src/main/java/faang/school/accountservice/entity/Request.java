@@ -1,6 +1,6 @@
 package faang.school.accountservice.entity;
 
-import faang.school.accountservice.config.converter.MapToStringConverter;
+import faang.school.accountservice.converter.MapToStringConverter;
 import faang.school.accountservice.enums.OwnerType;
 import faang.school.accountservice.enums.RequestStatus;
 import faang.school.accountservice.enums.RequestType;
@@ -43,7 +43,7 @@ public class Request {
     @Enumerated(EnumType.STRING)
     private RequestType requestType;
 
-    @Column(name = "lock_value", nullable = false)
+    @Column(name = "lock_value")
     private long lockValue;
 
     @Column(name = "is_open", nullable = false)
@@ -51,7 +51,7 @@ public class Request {
 
     @Column(name = "request_data", nullable = false)
     @Convert(converter = MapToStringConverter.class)
-    private Map<String,Object> requestData;
+    private Map<String, Object> requestData;
 
     @Column(name = "request_status", length = 60, nullable = false)
     @Enumerated(EnumType.STRING)
