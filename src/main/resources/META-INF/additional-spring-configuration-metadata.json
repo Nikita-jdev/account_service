@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "scheduler.generateNumbersCron",
+      "type": "java.lang.String",
+      "description": "Description for scheduler.enerateNumbersCron."
+    },
+    {
+      "name": "scheduler.account_number.batchSize",
+      "type": "java.lang.String",
+      "description": "Description for scheduler.account_number.batchSize."
+    }
+  ]
+}
