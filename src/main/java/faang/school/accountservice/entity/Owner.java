@@ -1,5 +1,6 @@
 package faang.school.accountservice.entity;
 
+import faang.school.accountservice.enums.OwnerType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,8 @@ public class Owner {
     private long ownerId;
 
     @Column(name = "owner_type", nullable = false)
-    private int ownerType;
+    @Enumerated(EnumType.ORDINAL)
+    private OwnerType ownerType;
 
     @OneToMany(mappedBy = "accountOwner")
     private List<Account> accounts;
