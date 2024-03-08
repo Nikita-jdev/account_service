@@ -1,19 +1,27 @@
 package faang.school.accountservice.entity;
 
 import faang.school.accountservice.entity.converter.HashMapConverter;
+import faang.school.accountservice.enums.OperationStatus;
+import faang.school.accountservice.enums.OperationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,17 +34,18 @@ import java.util.UUID;
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "request_id")
-    private UUID requestId;
+    @Column(name = "token")
+    private UUID token;
 
     @Column(name = "user_id")
     private long userId;
 
-    @Column(name = "request_type")
-    private String requestType;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "operation_type", nullable = false)
+    private OperationType operationType;
 
     @Column(name = "lock_value")
-    private String lockValue;
+    private Long lockValue;
 
     @Column(name = "is_open")
     private boolean isOpen;
@@ -45,18 +54,23 @@ public class Request {
     @Convert(converter = HashMapConverter.class)
     private Map<String, Object> inputData;
 
-    @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "operation_status", nullable = false)
+    private OperationStatus operationStatus;
 
     @Column(name = "status_details")
-    private String statusDetails;
+    private String operationStatusDetails;
 
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
-    private Timestamp updatedAt;
+    private LocalDateTime updatedAt;
 
-    @Column(name = "version")
-    private int version;
+    @Column(name = "version", nullable = false)
+    private Long version;
 }
