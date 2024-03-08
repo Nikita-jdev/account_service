@@ -25,4 +25,21 @@ public class AccountService {
         account.setStatus(Status.ACTIVE);
         return accountMapper.toDto(accountRepository.save(account));
     }
+
+    @Transactional(readOnly = true)
+    public AccountDto getAccount(long id) {
+        return accountMapper.toDto(findById(id));
+    }
+
+    @Transactional
+    public AccountDto blockAccount(long id) {
+        Account account = findById(id);
+
+        return accountMapper.toDto(accountRepository.save(account));
+    }
+
+    public Account findById(long id) {
+        return accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+    }
+
 }

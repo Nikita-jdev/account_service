@@ -16,8 +16,14 @@ public class AccountController {
         return accountService.openAccount(accountDto);
     }
 
-    @GetMapping("/account")
+    @GetMapping("/account/{id}")
     public AccountDto getAccount(@PathVariable long id) {
-        return null;
+        return accountService.getAccount(id);
     }
+
+    @PutMapping("{id}/block")
+    public AccountDto blockAccount(@PathVariable long id) {
+        return accountService.blockAccount(id);
+    }
+
 }
