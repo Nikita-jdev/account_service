@@ -1,12 +1,10 @@
 package faang.school.accountservice.dto;
 
-import faang.school.accountservice.enums.OperationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -14,12 +12,8 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RequestDto {
+public class RequestUpdateDto {
     private UUID token;
-    private long userId;
-    private OperationType operationType;
     private Map<String, Object> inputData;
     private String statusDetails;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

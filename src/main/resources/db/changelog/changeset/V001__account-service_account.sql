@@ -13,5 +13,5 @@ CREATE TABLE request
     version          bigint      DEFAULT 1
 
     /*CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (id),
-    CONSTRAINT unique_lock UNIQUE (lock)*/
+    CONSTRAINT unique_lock UNIQUE (lock_value)*/
 );

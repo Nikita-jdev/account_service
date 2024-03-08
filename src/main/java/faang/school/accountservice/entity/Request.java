@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -59,7 +60,7 @@ public class Request {
     private OperationStatus operationStatus;
 
     @Column(name = "status_details")
-    private String operationStatusDetails;
+    private String statusDetails;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -71,6 +72,7 @@ public class Request {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Version
     @Column(name = "version", nullable = false)
     private Long version;
 }
