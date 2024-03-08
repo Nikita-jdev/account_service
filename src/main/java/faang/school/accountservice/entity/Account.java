@@ -29,6 +29,9 @@ public class Account {
     @Column(name = "account_number", unique = true)
     private long accountNumber;
 
+    @Column(name = "owner_name")
+    private String ownerName;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "balance_id")
     private Balance balance;

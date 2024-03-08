@@ -35,13 +35,12 @@ public class Balance {
     @Column(name = "actual_balance")
     private long actualBalance;
 
-    @Column(name = "balance_created_at")
-    private LocalDateTime balanceCreatedAt;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    @Column(name = "change_balance_at")
-    private LocalDateTime changeBalanceAt;
+    @Column(name = "change_at")
+    private LocalDateTime changeAt;
 
     @Version
-    @Column(name = "balance_version")
-    private int balanceVersion;
+    private int version;
 }
