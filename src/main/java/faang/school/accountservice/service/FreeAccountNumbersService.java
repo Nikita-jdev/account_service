@@ -1,5 +1,8 @@
 package faang.school.accountservice.service;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class FreeAccountNumbersService {
 
     public String getFreeNumber(String type) {

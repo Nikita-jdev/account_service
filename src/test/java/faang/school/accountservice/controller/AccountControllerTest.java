@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class AccountControllerTest {
@@ -38,6 +37,23 @@ class AccountControllerTest {
     }
 
     @Test
-    void getAccount() {
+    void shouldGetAccount() {
+        Mockito.when(accountService.getAccount(1L)).thenReturn(accountDto);
+        accountController.getAccount(1L);
+        Mockito.verify(accountService, Mockito.times(1)).getAccount(1L);
+    }
+
+    @Test
+    void shouldBlockAccount() {
+        Mockito.when(accountService.blockAccount(1L)).thenReturn(accountDto);
+        accountController.blockAccount(1L);
+        Mockito.verify(accountService, Mockito.times(1)).blockAccount(1L);
+    }
+
+    @Test
+    void shouldCloseAccount() {
+        Mockito.when(accountService.closeAccount(1L)).thenReturn(accountDto);
+        accountController.closeAccount(1L);
+        Mockito.verify(accountService, Mockito.times(1)).closeAccount(1L);
     }
 }
