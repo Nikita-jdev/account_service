@@ -27,7 +27,7 @@ public class FreeAccountNumberScheduler {
 
     @Scheduled(cron = "${scheduler.generateNumbersCron}")
     public void generateInvestmentAccountNumber() {
-        service.generateNumber(batchSize,AccountType.INVESTMENT);
+        service.generateNumber(batchSize, AccountType.INVESTMENT);
     }
 
     @Scheduled(cron = "${scheduler.generateNumbersCron}")

@@ -1,14 +1,12 @@
 package faang.school.accountservice.service;
 
-import faang.school.accountservice.entity.FreeAccountNumberId;
-import faang.school.accountservice.entity.FreeAccountNumberSequence;
-import faang.school.accountservice.enums.AccountType;
 import faang.school.accountservice.entity.FreeAccountNumber;
+import faang.school.accountservice.enums.AccountType;
 import faang.school.accountservice.repository.FreeAccountNumbersRepository;
 import faang.school.accountservice.repository.FreeAccountNumbersSeqRepository;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
-
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,24 +22,24 @@ public class FreeAccountNumbersService {
     private final FreeAccountNumbersRepository freeAccountNumbersRepository;
     private final FreeAccountNumbersSeqRepository freeAccountNumbersSeqRepository;
 
-    @Retryable(retryFor = OptimisticLockException.class)
     @Transactional
-    public void generateNumber(int count, AccountType accountType) {
+    @Retryable(retryFor = OptimisticLockException.class, backoff = @Backoff(delay = 100))
+    public void generateNumber(int batchSize, AccountType accountType) {
         List<FreeAccountNumber> freeAccountNumbers = new ArrayList<>();
-        FreeAccountNumberSequence seq = freeAccountNumbersSeqRepository
-                .getFreeAccountNumberSequence(count, accountType.name());
-        for (int i = 0; i < count; i++) {
+        long seq = freeAccountNumbersSeqRepository.getSeqByType(accountType.name());
+        freeAccountNumbersSeqRepository.incrementCounter(accountType.name(), batchSize);
+        for (long i = seq + 1; i <= batchSize; i++) {
             freeAccountNumbers.add(FreeAccountNumber.builder()
-                    .id(new FreeAccountNumberId(accountType,
-                            (String.valueOf(accountType.getPrefix() * 1000_0000_0000L + seq.getCount()))))
+                    .accountNumber(String.valueOf(accountType.getPrefix() * 1000_0000_0000_0L + i))
+                    .accountType(accountType)
                     .build());
         }
         freeAccountNumbersRepository.saveAll(freeAccountNumbers);
     }
 
     @Transactional
-    public void getNumber(AccountType type,
-                          Consumer<FreeAccountNumber> freeAccountNumberConsumer) {
-        freeAccountNumberConsumer.accept(freeAccountNumbersRepository.findFirstAndDeleteNumber(type.name()));
+    public void getNumber(AccountType type, Consumer<String> consumer) {
+        String freeAccountNumber = freeAccountNumbersRepository.findFirstAndDeleteNumber(type.name());
+        consumer.accept(freeAccountNumber);
     }
 }
