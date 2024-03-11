@@ -1,6 +1,7 @@
 package faang.school.accountservice.entity;
 
 import faang.school.accountservice.enums.AccountStatus;
+import faang.school.accountservice.enums.AccountType;
 import faang.school.accountservice.enums.Currency;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
@@ -11,7 +12,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
 import java.time.LocalDateTime;
@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 @Table(name = "account")
 public class Account {
 
-    @jakarta.persistence.Id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,8 +33,13 @@ public class Account {
     @Column(name = "number", nullable = false, unique = true)
     private String number;
 
-    @Column(name = "owner_id", nullable = false)
-    private Long ownerId;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "account_type")
+    private AccountType accountType;
 
     @Column(name = "currency")
     @Enumerated(EnumType.STRING)
