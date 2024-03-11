@@ -18,4 +18,4 @@ CREATE TABLE IF NOT EXISTS account(
     CONSTRAINT fk_owner_id FOREIGN KEY (owner_id) REFERENCES owner(id)
     );
 
-    CREATE UNIQUE INDEX account_idx ON account(number);
+    CREATE UNIQUE INDEX account_owner_idx ON account(owner_id);
