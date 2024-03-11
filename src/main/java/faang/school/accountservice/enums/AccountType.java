@@ -1,7 +1,7 @@
 package faang.school.accountservice.enums;
 
 public enum AccountType {
-    DEBET,
+    DEBIT,
     CREDIT,
     SAVING,
     CURRENT,
