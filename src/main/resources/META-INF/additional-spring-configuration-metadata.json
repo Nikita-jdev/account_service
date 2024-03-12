@@ -3,7 +3,7 @@
     {
       "name": "scheduler.generateNumbersCron",
       "type": "java.lang.String",
-      "description": "Description for scheduler.enerateNumbersCron."
+      "description": "Description for scheduler.generateNumbersCron."
     },
     {
       "name": "scheduler.account_number.batchSize",
