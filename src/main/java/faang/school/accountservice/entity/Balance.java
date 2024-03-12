@@ -1,21 +1,16 @@
 package faang.school.accountservice.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "balances")
+@Table(name = "balance")
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,14 +21,15 @@ public class Balance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "account_number", nullable = false)
-    private long accountNumber;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_number", nullable = false)
+    private Account account;
 
-    @Column(name = "authorization_balance")
-    private long authorizationBalance;
+    @Column(name = "authorization_balance", nullable = false)
+    private BigDecimal authorizationBalance;
 
-    @Column(name = "actual_balance")
-    private long actualBalance;
+    @Column(name = "actual_balance", nullable = false)
+    private BigDecimal actualBalance;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -42,5 +38,6 @@ public class Balance {
     private LocalDateTime changeAt;
 
     @Version
+    @Column(name = "version", nullable = false)
     private int version;
 }
