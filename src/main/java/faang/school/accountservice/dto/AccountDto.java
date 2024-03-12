@@ -18,8 +18,8 @@ public class AccountDto {
 
     private long id;
 
-    @NotNull(message = "Owner id must not be null")
-    private long ownerId;
+    @NotNull(message = "Owner must not be null")
+    private OwnerDto owner;
 
     @Size(min = 12, max = 20, message = "account number length should be between 12 and 20")
     private String number;

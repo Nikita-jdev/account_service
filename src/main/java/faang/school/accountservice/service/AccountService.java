@@ -12,6 +12,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Service
@@ -36,7 +37,7 @@ public class AccountService {
     public AccountDto close(long id) {
         Account account = getAccount(id);
         account.setStatus(Status.CLOSED);
-        account.setClosedAt(LocalDateTime.now());
+        account.setClosedAt(Instant.now());
         return accountMapper.toDto(account);
     }
 

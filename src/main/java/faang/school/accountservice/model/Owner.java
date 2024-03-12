@@ -34,7 +34,7 @@ public class Owner {
     private long owner_id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "owner_type")
+    @Column(name = "owner_type", nullable = false)
     private OwnerType ownerType;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)

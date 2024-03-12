@@ -21,8 +21,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.TimeZoneColumn;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -38,18 +40,18 @@ public class Account {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "owner_id", nullable = false)
     private Owner owner;
 
     @Column(name = "number", nullable = false, unique = true, length = 20)
     private String number;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "account_type")
+    @Column(name = "account_type", nullable = false)
     private AccountType type;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "currency")
+    @Column(name = "currency", nullable = false, length = 3)
     private Currency currency;
 
     @Enumerated(EnumType.STRING)
@@ -59,18 +61,17 @@ public class Account {
     @CreationTimestamp
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column(name = "closed_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime closedAt;
+    private Instant closedAt;
 
     @Version
-    @Column(name = "version")
     private long version;
 }
