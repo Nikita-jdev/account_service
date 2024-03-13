@@ -30,6 +30,6 @@ public class FreeAccountNumber {
     @Column(name = "account_type", nullable = false)
     private AccountType accountType;
 
-    @Column(name = "number")
+    @Column(name = "number", nullable = false)
     private String accountNumber;
 }
