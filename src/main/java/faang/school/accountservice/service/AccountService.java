@@ -1,10 +1,13 @@
 package faang.school.accountservice.service;
 
 import faang.school.accountservice.dto.AccountDto;
+import faang.school.accountservice.dto.CreateAccountDto;
 import faang.school.accountservice.entity.Account;
 import faang.school.accountservice.enums.Status;
+import faang.school.accountservice.exception.EntityNotFoundException;
 import faang.school.accountservice.mapper.AccountMapper;
 import faang.school.accountservice.repository.AccountRepository;
+import faang.school.accountservice.validator.AccountValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -20,12 +23,13 @@ public class AccountService {
     private final AccountMapper accountMapper;
     private final FreeAccountNumbersService freeAccountNumbersService;
     private final OwnerService ownerService;
+    private final AccountValidator accountValidator;
 
     @Transactional
     @Retryable(retryFor = OptimisticLockingFailureException.class, maxAttempts = 3)
-    public AccountDto openAccount(AccountDto accountDto) {
+    public AccountDto openAccount(CreateAccountDto accountDto) {
         Account account = accountMapper.toEntity(accountDto);
-        account.setAccountNumber(freeAccountNumbersService.getFreeNumber(accountDto.getAccountType()));
+        account.setAccountNumber(freeAccountNumbersService.getFreeNumber(accountDto.getAccountType().toString()));
         account.setStatus(Status.ACTIVE);
         account.setAccountOwner(ownerService.findById(accountDto.getOwnerId()));
         return accountMapper.toDto(accountRepository.save(account));
@@ -41,8 +45,9 @@ public class AccountService {
     @Retryable(retryFor = OptimisticLockingFailureException.class, maxAttempts = 3)
     public AccountDto blockAccount(long id) {
         Account account = findById(id);
+        accountValidator.validateNotFrozen(account);
         account.setStatus(Status.FROZEN);
-        return accountMapper.toDto(accountRepository.save(account));
+        return accountMapper.toDto(account);
     }
 
     @Transactional
@@ -50,11 +55,11 @@ public class AccountService {
     public AccountDto closeAccount(long id) {
         Account account = findById(id);
         account.setStatus(Status.CLOSED);
-        return accountMapper.toDto(accountRepository.save(account));
+        return accountMapper.toDto(account);
     }
 
     public Account findById(long id) {
-        return accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+        return accountRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Account not found"));
     }
 
 }

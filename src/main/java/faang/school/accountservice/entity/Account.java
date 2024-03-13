@@ -31,7 +31,7 @@ public class Account {
     @JoinColumn(name = "account_owner")
     private Owner accountOwner;
 
-    @Column(name = "account_type", length = 32)
+    @Column(name = "account_type", length = 32, nullable = false)
     @Enumerated(EnumType.STRING)
     private Type accountType;
 

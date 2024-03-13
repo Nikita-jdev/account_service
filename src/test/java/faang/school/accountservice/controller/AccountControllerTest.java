@@ -1,6 +1,9 @@
 package faang.school.accountservice.controller;
 
 import faang.school.accountservice.dto.AccountDto;
+import faang.school.accountservice.dto.CreateAccountDto;
+import faang.school.accountservice.enums.Currency;
+import faang.school.accountservice.enums.Type;
 import faang.school.accountservice.service.AccountService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,21 +22,28 @@ class AccountControllerTest {
     private AccountController accountController;
 
     private AccountDto accountDto;
+    private CreateAccountDto createAccountDto;
 
     @BeforeEach
     void setUp() {
         accountDto = AccountDto.builder()
                 .ownerId(1L)
-                .accountType("DEBIT")
-                .currency("USD")
+                .accountType(Type.DEBIT)
+                .currency(Currency.USD)
+                .build();
+
+        createAccountDto = CreateAccountDto.builder()
+                .ownerId(1L)
+                .accountType(Type.DEBIT)
+                .currency(Currency.USD)
                 .build();
     }
 
     @Test
     void shouldOpenAccount() {
-        Mockito.when(accountService.openAccount(accountDto)).thenReturn(accountDto);
-        accountController.openAccount(accountDto);
-        Mockito.verify(accountService, Mockito.times(1)).openAccount(accountDto);
+        Mockito.when(accountService.openAccount(createAccountDto)).thenReturn(accountDto);
+        accountController.openAccount(createAccountDto);
+        Mockito.verify(accountService, Mockito.times(1)).openAccount(createAccountDto);
     }
 
     @Test
