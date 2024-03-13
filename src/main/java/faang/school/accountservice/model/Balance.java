@@ -1,16 +1,25 @@
-package faang.school.accountservice.entity;
+package faang.school.accountservice.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-@Entity
 @Table(name = "balance")
+@Entity
 @Data
 @Builder
 @NoArgsConstructor
@@ -32,12 +41,16 @@ public class Balance {
     private BigDecimal actualBalance;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    @Column(name = "change_at")
-    private LocalDateTime changeAt;
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
     @Version
     @Column(name = "version", nullable = false)
     private int version;
+
+    public void versionIncrement() {
+        version++;
+    }
 }

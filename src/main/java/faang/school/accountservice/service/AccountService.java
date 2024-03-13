@@ -1,10 +1,12 @@
 package faang.school.accountservice.service;
 
 import faang.school.accountservice.dto.AccountDto;
+import faang.school.accountservice.dto.BalanceDto;
 import faang.school.accountservice.enums.Status;
 import faang.school.accountservice.mapper.AccountMapper;
 import faang.school.accountservice.model.Account;
 import faang.school.accountservice.repository.AccountRepository;
+import faang.school.accountservice.repository.BalanceRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
@@ -13,14 +15,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class AccountService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
-
+    private final BalanceService balanceService;
     public AccountDto get(long id) {
         return accountMapper.toDto(getAccount(id));
     }
@@ -28,6 +29,8 @@ public class AccountService {
     @Retryable(retryFor = OptimisticLockException.class)
     public AccountDto open(AccountDto accountDto) {
         accountDto.setStatus(Status.ACTIVE);
+        BalanceDto createBalance = balanceService.createBalance();
+        accountDto.setBalance(createBalance);
         Account newAccount = accountRepository.save(accountMapper.toEntity(accountDto));
         return accountMapper.toDto(newAccount);
     }
