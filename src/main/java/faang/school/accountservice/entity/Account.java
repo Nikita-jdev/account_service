@@ -14,6 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.Version;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -30,24 +31,27 @@ public class Account {
 
     @Size(min = 12, max = 20)
     @Pattern(regexp = "\\d{12,20}")
-    @Column(name = "number", nullable = false, unique = true)
+    @Column(name = "number", length = 20, nullable = false, unique = true)
     private String number;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "owner_id", nullable = false)
     private Owner owner;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "account_type")
+    @Column(name = "account_type", length = 16, nullable = false)
     private AccountType accountType;
 
-    @Column(name = "currency")
     @Enumerated(EnumType.STRING)
+    @Column(name = "currency", length = 8, nullable = false)
     private Currency currency;
 
-    @Column(name = "status")
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 16)
     private AccountStatus status;
+
+    @Column(name = "balance")
+    private BigDecimal balance;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
@@ -61,7 +65,7 @@ public class Account {
     private LocalDateTime closedAt;
 
     @Version()
-    @Column(name = "version", nullable = false)
-    private Long version;
+    @Column(name = "version")
+    private long version;
 
 }

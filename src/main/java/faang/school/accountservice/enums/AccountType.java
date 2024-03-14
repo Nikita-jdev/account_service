@@ -7,4 +7,5 @@ public enum AccountType {
     CURRENT,
     INVESTMENT,
     OTHER
+
 }
