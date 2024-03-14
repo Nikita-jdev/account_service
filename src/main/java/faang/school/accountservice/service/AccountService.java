@@ -4,18 +4,21 @@ import faang.school.accountservice.dto.AccountDto;
 import faang.school.accountservice.dto.BalanceDto;
 import faang.school.accountservice.enums.Currency;
 import faang.school.accountservice.enums.Status;
+import faang.school.accountservice.exception.AccountInactiveException;
 import faang.school.accountservice.mapper.AccountMapper;
 import faang.school.accountservice.model.Account;
 import faang.school.accountservice.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AccountService {
@@ -63,6 +66,16 @@ public class AccountService {
     public void blockStatusValidate(Status status) {
         if (status != Status.BLOCKED && status != Status.SUSPENDED) {
             throw new IllegalArgumentException("You can use only BLOCKED or SUSPENDED status");
+        }
+    }
+
+    public void accountAvailable(String number) {
+        Account account = accountRepository.findByNumber(number)
+                .orElseThrow(() -> new EntityNotFoundException("Account not found"));
+        log.info("Not found account with number: {}", number);
+        if (!account.getStatus().equals(Status.ACTIVE)) {
+            log.info("Account is not active: {}", number);
+            throw new AccountInactiveException("Account is not active");
         }
     }
 }

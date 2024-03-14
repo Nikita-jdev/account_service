@@ -2,6 +2,7 @@ package faang.school.accountservice.service;
 
 import faang.school.accountservice.dto.BalanceDto;
 import faang.school.accountservice.enums.Currency;
+import faang.school.accountservice.exception.InsufficientFundsException;
 import faang.school.accountservice.mapper.BalanceMapper;
 import faang.school.accountservice.model.Balance;
 import faang.school.accountservice.repository.BalanceRepository;
@@ -40,7 +41,7 @@ public class BalanceService {
         balance.versionIncrement();
 
         Balance saveBalance = saveBalance(balance);
-        log.info("Amount was successful deposited an account: {}", accountNumber);
+        log.info("Deposit was successful an account: {}", accountNumber);
         return balanceMapper.toDto(saveBalance);
     }
 
@@ -67,7 +68,8 @@ public class BalanceService {
             saveBalance(balance);
             log.info("Payment authorization was successful an account: {}", accountNumber);
         } else {
-            log.info("Payment authorization was unsuccessful an account: {}", accountNumber);
+            log.info("Insufficient funds. Payment unsuccessful an account: {}", accountNumber);
+            throw new InsufficientFundsException("Insufficient funds on account!");
         }
     }
 
@@ -83,6 +85,8 @@ public class BalanceService {
             Balance updatedBalance = updateBalance(accountNumber, balance);
             saveBalance(updatedBalance);
             log.info("Payment was successful an account: {}", accountNumber);
+        } else {
+            log.info("Payment was unsuccessful an account: {}", accountNumber);
         }
     }
 
