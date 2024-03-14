@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
-    //  @Value("${random.number-generator.min}") //почему то ругается и кидает UnsatisfiedDependencyException
+//      @Value("${random.number-generator.min}") //почему то ругается и кидает UnsatisfiedDependencyException
     private static final int MIN_DIGITS = 12; // поэтому константы!
     private static final int MAX_DIGITS = 20;
 
