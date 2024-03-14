@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.Version;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -32,6 +33,7 @@ public class Request {
     @Column(name = "user_id")
     private Long userId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "request_type")
     private RequestType requestType;
 
@@ -48,6 +50,7 @@ public class Request {
     private Map<String, Object> inputData;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "request_status")
     private RequestStatus requestStatus;
 
@@ -62,6 +65,7 @@ public class Request {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Version()
     @Column(name = "version")
-    private Integer version;
+    private int version;
 }
