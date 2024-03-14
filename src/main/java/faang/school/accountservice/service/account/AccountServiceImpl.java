@@ -42,7 +42,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     @Retryable(retryFor = OptimisticLockException.class, maxAttempts = 5)
     public AccountDto create(AccountDto accountDto) {
         log.info("Попытка открыть новый счёт для владельца с ID: {}, c №: {}, типом: {}, валютой: {}",
@@ -65,6 +65,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
+    @Retryable(retryFor = OptimisticLockException.class, maxAttempts = 5)
     public AccountDto blockAccount(long id) {
         Account account = getAccountById(id);
 
