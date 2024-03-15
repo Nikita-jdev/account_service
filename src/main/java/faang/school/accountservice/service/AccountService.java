@@ -27,11 +27,11 @@ public class AccountService {
 
     @Transactional
     @Retryable(retryFor = OptimisticLockingFailureException.class, maxAttempts = 3)
-    public AccountDto openAccount(CreateAccountDto accountDto) {
-        Account account = accountMapper.toEntity(accountDto);
-        account.setAccountNumber(freeAccountNumbersService.getFreeNumber(accountDto.getAccountType().toString()));
+    public AccountDto openAccount(CreateAccountDto createAccountDto) {
+        Account account = accountMapper.toEntity(createAccountDto);
+        account.setAccountNumber(freeAccountNumbersService.getFreeNumber(createAccountDto.getAccountType()));
         account.setStatus(Status.ACTIVE);
-        account.setAccountOwner(ownerService.findById(accountDto.getOwnerId()));
+        account.setAccountOwner(ownerService.findById(createAccountDto.getOwnerId()));
         return accountMapper.toDto(accountRepository.save(account));
     }
 

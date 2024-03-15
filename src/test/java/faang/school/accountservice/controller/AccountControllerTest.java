@@ -34,8 +34,8 @@ class AccountControllerTest {
 
         createAccountDto = CreateAccountDto.builder()
                 .ownerId(1L)
-                .accountType(Type.DEBIT)
-                .currency(Currency.USD)
+                .accountType("DEBIT")
+                .currency("USD")
                 .build();
     }
 
