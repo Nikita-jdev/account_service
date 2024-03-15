@@ -3,8 +3,6 @@ package faang.school.accountservice.handler;
 import faang.school.accountservice.exception.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import faang.school.accountservice.exception.AccountOperationException;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -17,8 +15,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
@@ -54,17 +50,17 @@ public class GlobalExceptionHandler {
         return e.getMessage();
     }
 
-    @ExceptionHandler({AccountOperationException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleException(AccountOperationException e) {
-        log.error("Error: {}", e.getMessage());
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleException(IllegalArgumentException e) {
+        log.error("Exception: ", e);
         return e.getMessage();
     }
 
-    @ExceptionHandler({EntityNotFoundException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleException(EntityNotFoundException e) {
-        log.error("Error: {}", e.getMessage());
+    @ExceptionHandler({AccountOperationException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleException(AccountOperationException e) {
+        log.error("Error: ", e);
         return e.getMessage();
     }
 
@@ -79,5 +75,4 @@ public class GlobalExceptionHandler {
         }
         return message;
     }
-
 }

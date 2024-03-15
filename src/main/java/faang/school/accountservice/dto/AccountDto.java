@@ -13,8 +13,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -41,7 +39,4 @@ public class AccountDto {
     private Currency currency;
 
     private AccountStatus status;
-
-    private BigDecimal balance;
-
 }

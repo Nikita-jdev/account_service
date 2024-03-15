@@ -14,7 +14,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.Version;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -50,9 +49,6 @@ public class Account {
     @Column(name = "status", length = 16)
     private AccountStatus status;
 
-    @Column(name = "balance")
-    private BigDecimal balance;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -68,4 +64,6 @@ public class Account {
     @Column(name = "version")
     private long version;
 
+    @OneToOne(mappedBy = "account")
+    private Balance balance;
 }
