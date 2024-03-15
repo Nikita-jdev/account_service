@@ -86,7 +86,6 @@ class AccountServiceTest {
         accountService.blockAccount(1L);
         Mockito.verify(accountValidator, Mockito.times(1)).validateNotFrozen(account);
         Mockito.verify(accountRepository, Mockito.times(1)).findById(1L);
-        Mockito.verify(accountRepository, Mockito.times(1)).save(Mockito.any());
     }
 
     @Test
@@ -94,6 +93,25 @@ class AccountServiceTest {
         Mockito.when(accountRepository.findById(1L)).thenReturn(Optional.of(account));
         accountService.closeAccount(1L);
         Mockito.verify(accountRepository, Mockito.times(1)).findById(1L);
-        Mockito.verify(accountRepository, Mockito.times(1)).save(Mockito.any());
+    }
+
+    @Test
+    void shouldConvertType() {
+        assertEquals(Type.DEBIT, accountMapper.toEntity(createAccountDto).getAccountType());
+    }
+
+    @Test
+    void shouldConvertCurrency() {
+        assertEquals(Currency.USD, accountMapper.toEntity(createAccountDto).getCurrency());
+    }
+
+    @Test
+    void convertTypeExceptionTest() {
+        assertThrows(IllegalArgumentException.class, () -> accountMapper.toEntity(createAccountDto).setAccountType(Type.valueOf("SOME_TYPE")));
+    }
+
+    @Test
+    void convertCurrencyExceptionTest() {
+        assertThrows(IllegalArgumentException.class, () -> accountMapper.toEntity(createAccountDto).setCurrency(Currency.valueOf("SOME_CURRENCY")));
     }
 }

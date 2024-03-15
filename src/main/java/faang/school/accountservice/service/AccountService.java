@@ -3,7 +3,10 @@ package faang.school.accountservice.service;
 import faang.school.accountservice.dto.AccountDto;
 import faang.school.accountservice.dto.CreateAccountDto;
 import faang.school.accountservice.entity.Account;
+import faang.school.accountservice.enums.Currency;
 import faang.school.accountservice.enums.Status;
+import faang.school.accountservice.enums.Type;
+import faang.school.accountservice.exception.DataValidationException;
 import faang.school.accountservice.exception.EntityNotFoundException;
 import faang.school.accountservice.mapper.AccountMapper;
 import faang.school.accountservice.repository.AccountRepository;
@@ -14,6 +17,8 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
 
 @Slf4j
 @Service
@@ -29,6 +34,8 @@ public class AccountService {
     @Retryable(retryFor = OptimisticLockingFailureException.class, maxAttempts = 3)
     public AccountDto openAccount(CreateAccountDto createAccountDto) {
         Account account = accountMapper.toEntity(createAccountDto);
+        account.setAccountType(convertType(createAccountDto.getAccountType()));
+        account.setCurrency(convertCurrency(createAccountDto.getCurrency()));
         account.setAccountNumber(freeAccountNumbersService.getFreeNumber(createAccountDto.getAccountType()));
         account.setStatus(Status.ACTIVE);
         account.setAccountOwner(ownerService.findById(createAccountDto.getOwnerId()));
@@ -60,6 +67,31 @@ public class AccountService {
 
     public Account findById(long id) {
         return accountRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Account not found"));
+    }
+
+    //Два одинаковых метода. Можно сделать один общий, только не знаю в какой класс его поместить
+    public Type convertType(String type) {
+        if (!type.isBlank()) {
+            try {
+                return Type.valueOf(type);
+            } catch (IllegalArgumentException e) {
+                throw new DataValidationException("Введено некорректное значение для параметра Type :" +
+                        type + "\nДопустимые значения: " + Arrays.toString(Type.values()));
+            }
+        }
+        return null;
+    }
+
+    public Currency convertCurrency(String currency) {
+        if (!currency.isBlank()) {
+            try {
+                return Currency.valueOf(currency);
+            } catch (IllegalArgumentException e) {
+                throw new DataValidationException("Введено некорректное значение для параметра Type :" +
+                        currency + "\nДопустимые значения: " + Arrays.toString(Currency.values()));
+            }
+        }
+        return null;
     }
 
 }
