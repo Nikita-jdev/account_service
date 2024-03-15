@@ -1,4 +1,4 @@
-package faang.school.accountservice.handler;
+package faang.school.accountservice.exception;
 
 import faang.school.accountservice.exception.DataValidationException;
 import org.springframework.http.ResponseEntity;
