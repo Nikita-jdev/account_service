@@ -23,3 +23,8 @@ server:
 logging:
   level:
     root: info
+
+scheduler:
+  generateNumbersCron: "0 0 * * * *"
+  account_number:
+    batchSize: 10

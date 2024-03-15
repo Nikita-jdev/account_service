@@ -1,6 +1,7 @@
 package faang.school.accountservice.service;
 
 import faang.school.accountservice.dto.AccountDto;
+import faang.school.accountservice.dto.OwnerDto;
 import faang.school.accountservice.enums.AccountType;
 import faang.school.accountservice.enums.Currency;
 import faang.school.accountservice.enums.OwnerType;
@@ -31,6 +32,9 @@ public class AccountServiceTest {
     @Spy
     private AccountMapperImpl accountMapper;
 
+    @Mock
+    private FreeAccountNumbersService freeAccountNumbersService;
+
     @InjectMocks
     private AccountService accountService;
 
@@ -38,6 +42,7 @@ public class AccountServiceTest {
     private Account account;
     private Account secondAccount;
     private AccountDto accountDto;
+    private OwnerDto ownerDto;
 
     @BeforeEach
     public void init() {
@@ -46,6 +51,12 @@ public class AccountServiceTest {
                 .owner_id(1L)
                 .ownerType(OwnerType.USER)
                 .build();
+        ownerDto = OwnerDto.builder()
+                .id(1L)
+                .ownerId(1L)
+                .ownerType(OwnerType.USER)
+                .build();
+
         account = Account.builder()
                 .id(1L)
                 .currency(Currency.USD)
@@ -68,7 +79,7 @@ public class AccountServiceTest {
                 .number("1010202030304040")
                 .status(Status.ACTIVE)
                 .type(AccountType.CREDIT)
-                .ownerId(1L)
+                .owner(ownerDto)
                 .build();
     }
 
