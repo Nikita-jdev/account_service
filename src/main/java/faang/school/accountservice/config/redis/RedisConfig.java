@@ -1,5 +1,7 @@
 package faang.school.accountservice.config.redis;
 
+import faang.school.accountservice.listener.DmsEventListener;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,9 +10,12 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
@@ -19,6 +24,10 @@ public class RedisConfig {
     private int port;
     @Value("${spring.data.redis.channels.create_request_channel.name}")
     private String createRequestChannelName;
+    @Value(("${spring.data.redis.channels.dms_channel.name}"))
+    private String dmsChannelName;
+
+    private final DmsEventListener dmsEventListener;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory() {
@@ -39,5 +48,24 @@ public class RedisConfig {
     @Bean
     ChannelTopic createRequestTopic() {
         return new ChannelTopic(createRequestChannelName);
+    }
+
+    @Bean
+    ChannelTopic dmsTopic() {
+        return new ChannelTopic(dmsChannelName);
+    }
+
+    @Bean
+    MessageListenerAdapter dmsListener() {
+        return new MessageListenerAdapter(dmsEventListener);
+    }
+
+    @Bean
+    RedisMessageListenerContainer redisContainer() {
+        RedisMessageListenerContainer container
+                = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisConnectionFactory());
+        container.addMessageListener(dmsEventListener, dmsTopic());
+        return container;
     }
 }

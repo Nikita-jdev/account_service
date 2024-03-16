@@ -24,6 +24,8 @@ spring:
       channels:
         create_request_channel:
           name: create_request_channel
+        dms_channel:
+          name: dms_channel
 
   async:
     core-pool-size: 5

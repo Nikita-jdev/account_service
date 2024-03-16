@@ -41,7 +41,7 @@ public class Balance {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Version()
+    @Version
     @Column(name = "version")
     private long version;
 }

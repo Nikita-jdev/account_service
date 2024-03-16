@@ -39,7 +39,7 @@ public class Request {
 
     @NotNull
     @Column(name = "lock_value")
-    private Integer lockValue;
+    private String lockValue;
 
     @NotNull
     @Column(name = "is_open_request")

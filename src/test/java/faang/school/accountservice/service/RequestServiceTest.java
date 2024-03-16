@@ -34,7 +34,7 @@ public class RequestServiceTest {
     void setUp() {
         request = Request.builder()
                 .userId(1L)
-                .lockValue(1)
+                .lockValue("1245321")
                 .isOpenRequest(true)
                 .requestStatus(RequestStatus.PENDING)
                 .build();
