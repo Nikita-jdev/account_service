@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -27,19 +28,14 @@ public class RequestService {
 
     @Transactional
     public RequestDto createRequest(RequestDto requestDto) {
-        requestValidator.validateAccess(requestDto);
+        Request buildRequest = buildRequestToCreate(requestDto);
+        Request savedRequest = requestRepository.save(buildRequest);
 
-        Request buildRequest = buildRequest(requestDto);
-
-        Request savedRequest = requestRepository.findById(buildRequest.getToken())
-                .orElseGet(
-                        () -> requestRepository.save(buildRequest)
-                );
         log.info("Request with token = {} and userId = {} saved", savedRequest.getToken(), savedRequest.getUserId());
         return requestMapper.toDto(savedRequest);
     }
 
-    private Request buildRequest(RequestDto requestDto) {
+    private Request buildRequestToCreate(RequestDto requestDto) {
         Request request = requestMapper.toEntity(requestDto);
         request.setOpen(false);
         request.setOperationStatus(OperationStatus.PENDING);
@@ -67,19 +63,19 @@ public class RequestService {
                 .toList();
     }
 
+    @Transactional
+    @Async
     public void executeRequests() {
+        executeRequestsPartitions();
+    }
+
+    private void executeRequestsPartitions () {
+        System.out.println("some action to requests");
+
         List<Request> requests = requestRepository.findAll();
         List<List<Request>> partitions = ListUtils.partition(requests, 5);
 
-        partitions.forEach(this::executeRequestsPartition);
-    }
-
-    @Transactional
-    @Async
-    public void executeRequestsPartition(List<Request> requests) {
-        requests.forEach(partition -> {
-            System.out.println("Some action to partition of requests");
-        });
+        partitions.forEach(System.out::println);
     }
 
     private Request getRequestByToken(UUID id) {

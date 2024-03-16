@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class RequestScheduler {
     private final RequestService requestService;
 
-    @Scheduled(cron = "...")
+    @Scheduled(cron = "${scheduler.cron.request}")
     public void executeRequest() {
         requestService.executeRequests();
     }

@@ -20,6 +20,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
@@ -34,8 +35,12 @@ import java.util.UUID;
 @Table(name = "request")
 public class Request {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "token")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", columnDefinition = "UUID")
     private UUID token;
 
     @Column(name = "user_id")

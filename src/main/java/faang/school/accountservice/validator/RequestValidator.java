@@ -12,14 +12,9 @@ public class RequestValidator {
 
     public void validateAccess (RequestDto requestDto) {
         long userId = requestDto.getUserId();
-        if (hasAccess(userId)) {
+
+        if (userId != userContext.getUserId()) {
             throw new SecurityException(String.format("User with id = %s has no access", userId));
         }
-    }
-
-
-
-    private boolean hasAccess (long userId) {
-        return userId == userContext.getUserId();
     }
 }
