@@ -23,3 +23,8 @@ server:
 logging:
   level:
     root: info
+
+random:
+  number-generator:
+    min: 12
+    max: 20
