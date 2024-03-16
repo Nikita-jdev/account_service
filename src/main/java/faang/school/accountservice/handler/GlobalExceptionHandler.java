@@ -2,6 +2,7 @@ package faang.school.accountservice.handler;
 
 import faang.school.accountservice.exception.AccountOperationException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,16 +23,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({AccountOperationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleException(AccountOperationException e) {
+    public ErrorResponse handleException(AccountOperationException e, HttpServletRequest request) {
         log.error("Error: {}", e.getMessage());
-        return e.getMessage();
+        return getErrorResponse(request.getRequestURI(), HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler({EntityNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleException(EntityNotFoundException e) {
+    public ErrorResponse handleException(EntityNotFoundException e, HttpServletRequest request) {
         log.error("Error: {}", e.getMessage());
-        return e.getMessage();
+        return getErrorResponse(request.getRequestURI(), HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -55,6 +57,16 @@ public class GlobalExceptionHandler {
             message += e.getMessage();
         }
         return message;
+    }
+
+    private ErrorResponse getErrorResponse(String url, HttpStatus status ,String message) {
+        return ErrorResponse.builder()
+                .url(url)
+                .status(status)
+                .message(message)
+                .timestamp(LocalDateTime.now())
+                .build();
+
     }
 
 }
