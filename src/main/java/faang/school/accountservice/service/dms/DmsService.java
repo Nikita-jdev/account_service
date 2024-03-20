@@ -101,7 +101,7 @@ public class DmsService {
         Account account = accountRepository.findByNumber(accountNumber)
                 .orElseThrow(() -> new EntityNotFoundException("Account not found by account number "+accountNumber));
 
-        return balanceRepository.findByAccountNumber(account)
+        return balanceRepository.findByAccountNumber(account.getNumber())
                 .orElseThrow(() -> new EntityNotFoundException("Balance not found by account number "+accountNumber));
     }
 

@@ -101,6 +101,6 @@ public class DmsServiceTest {
     private void prepareData() {
         when(accountRepository.findByNumber("12345")).thenReturn(Optional.of(account));
         when(accountRepository.findByNumber("54321")).thenReturn(Optional.of(account));
-        when(balanceRepository.findByAccountNumber(account)).thenReturn(Optional.of(balance));
+        when(balanceRepository.findByAccountNumber(account.getNumber())).thenReturn(Optional.of(balance));
     }
 }

@@ -26,7 +26,7 @@ import java.util.UUID;
 public class Request {
     @Id
     @Column(name = "id", columnDefinition = "UUID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @NotNull
