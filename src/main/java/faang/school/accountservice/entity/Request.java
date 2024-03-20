@@ -1,6 +1,6 @@
 package faang.school.accountservice.entity;
 
-import faang.school.accountservice.converter.MapToStringConverter;
+import faang.school.accountservice.config.converter.MapToStringConverter;
 import faang.school.accountservice.enums.OwnerType;
 import faang.school.accountservice.enums.RequestStatus;
 import faang.school.accountservice.enums.RequestType;

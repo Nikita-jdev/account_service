@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS request
     created_at     timestamptz,
     updated_at     timestamptz,
     version        BIGINT NOT NULL
-
-    CREATE INDEX request_owner_id ON request (owner_id, owner_type);
-    CREATE UNIQUE INDEX block_open_request ON request (is_open) WHERE is_open = true;
 );
+
+CREATE INDEX request_owner_id ON request (owner_id, owner_type);
+CREATE UNIQUE INDEX block_open_request ON request (is_open) WHERE is_open = true;
