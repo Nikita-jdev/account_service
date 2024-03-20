@@ -7,7 +7,7 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RequestMapper {
 
-    @Mapping(target = "requestData", expression = "java(ObjectToMapConverter.convertObjectToMap(requestTemplate.getRequestData()))")
+    @Mapping(target = "requestData", expression = "java(faang.school.accountservice.config.converter.ObjectToMapConverter.convertObjectToMap(requestTemplate.getRequestData()))")
     Request toEntity(RequestTemplate requestTemplate);
 
     RequestTemplate toRequestTemplate(Request request);
