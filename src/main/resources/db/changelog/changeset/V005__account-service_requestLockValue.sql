@@ -1,0 +1,5 @@
+ALTER TABLE request DROP COLUMN lock_value;
+ALTER TABLE request ADD COLUMN lock_value VARCHAR(255);
+
+ALTER TABLE request
+ALTER COLUMN input_data TYPE VARCHAR(255);
