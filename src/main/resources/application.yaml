@@ -5,6 +5,10 @@ spring:
     username: user
     password: password
 
+    batchSize: 1000
+    debitPattern: 4200_0000_0000_0000
+    savingsPattern: 5236_0000_0000_0000
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
