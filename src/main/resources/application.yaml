@@ -17,6 +17,7 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
+    default-schema: mySchema
 
 server:
   port: 8090
@@ -29,4 +30,3 @@ scheduler:
   generateNumbersCron: "0 0 * * * *"
   account_number:
     batchSize: 10
-

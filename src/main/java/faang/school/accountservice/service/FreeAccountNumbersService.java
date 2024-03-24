@@ -38,8 +38,10 @@ public class FreeAccountNumbersService {
     }
 
     @Transactional
-    public void getNumber(AccountType type, Consumer<String> consumer) {
+    public String getNumber(AccountType type, Consumer<String> consumer) {
         String freeAccountNumber = freeAccountNumbersRepository.findFirstAndDeleteNumber(type.name());
         consumer.accept(freeAccountNumber);
+
+        return freeAccountNumber;
     }
 }
