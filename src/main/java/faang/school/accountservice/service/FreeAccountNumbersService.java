@@ -44,5 +44,4 @@ public class FreeAccountNumbersService {
 
         return freeAccountNumber;
     }
-
 }
