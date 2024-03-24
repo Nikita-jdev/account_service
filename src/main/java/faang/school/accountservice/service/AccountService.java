@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
+    private final FreeAccountNumbersService freeAccountNumbersService;
 
     public AccountDto get(long id) {
         return accountMapper.toDto(getAccount(id));
@@ -27,7 +28,10 @@ public class AccountService {
 
     @Retryable(retryFor = OptimisticLockException.class)
     public AccountDto open(AccountDto accountDto) {
+        String number = freeAccountNumbersService.getNumber(accountDto.getType(),
+                n -> System.out.println("Generated number account number: " + n));
         accountDto.setStatus(Status.ACTIVE);
+        accountDto.setNumber(number);
         Account newAccount = accountRepository.save(accountMapper.toEntity(accountDto));
         return accountMapper.toDto(newAccount);
     }

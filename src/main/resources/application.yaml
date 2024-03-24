@@ -14,8 +14,10 @@ spring:
       hibernate:
         format_sql: true
 
+
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
+    default-schema: mySchema
 
 server:
   port: 8090
@@ -23,3 +25,8 @@ server:
 logging:
   level:
     root: info
+
+scheduler:
+  generateNumbersCron: "0 0 * * * *"
+  account_number:
+    batchSize: 10

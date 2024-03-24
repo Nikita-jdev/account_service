@@ -9,9 +9,9 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AccountMapper {
 
-    @Mapping(source = "owner.id", target = "owner.owner_id")
+    @Mapping(source = "owner.id", target = "owner.ownerId")
     AccountDto toDto (Account account);
 
-    @Mapping(source = "owner.owner_id", target = "owner.id")
+    @Mapping(source = "owner.ownerId", target = "owner.id")
     Account toEntity (AccountDto accountDto);
 }
