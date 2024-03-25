@@ -35,7 +35,7 @@ public class Balance {
     private long id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_number", nullable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
     @Enumerated(EnumType.STRING)
@@ -56,10 +56,5 @@ public class Balance {
     private Instant updatedAt;
 
     @Version
-    @Column(name = "version", nullable = false)
-    private int version;
-
-    public void versionIncrement() {
-        version++;
-    }
+    private long version;
 }

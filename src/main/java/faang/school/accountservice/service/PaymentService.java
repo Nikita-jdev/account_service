@@ -3,10 +3,12 @@ package faang.school.accountservice.service;
 import faang.school.accountservice.dto.PaymentResultDto;
 import faang.school.accountservice.exception.AccountInactiveException;
 import faang.school.accountservice.exception.InsufficientFundsException;
+import faang.school.accountservice.model.Balance;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
@@ -18,11 +20,13 @@ public class PaymentService {
     private final AccountService accountService;
     private final BalanceService balanceService;
 
+    @Transactional
     public PaymentResultDto paymentProcess(String accountNumber, BigDecimal amount) {
         try {
             accountService.accountAvailable(accountNumber);
-            balanceService.authorizePayment(accountNumber, amount);
-            balanceService.clearingPayment(accountNumber, amount);
+            Balance balance = balanceService.getBalance(accountNumber);
+            Balance authorizatedBalance = balanceService.authorizePayment(balance, amount);
+            balanceService.clearingPayment(authorizatedBalance, amount);
             return getPaymentResultDto(true, "Payment was successful!");
         } catch (EntityNotFoundException e) {
             return getPaymentResultDto(false, "Account not found!");

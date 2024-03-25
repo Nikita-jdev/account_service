@@ -38,7 +38,6 @@ public class BalanceService {
         BigDecimal newActualBalance = balance.getActualBalance().add(amount);
         balance.setAuthorizationBalance(newAuthorizationBalance);
         balance.setActualBalance(newActualBalance);
-        balance.versionIncrement();
 
         Balance saveBalance = saveBalance(balance);
         log.info("Deposit was successful an account: {}", accountNumber);
@@ -49,7 +48,6 @@ public class BalanceService {
         Balance balance = getBalance(accountNumber);
         if (balance.getVersion() == updateBalance.getVersion()) {
             updateBalance.setUpdatedAt(Instant.now());
-            updateBalance.versionIncrement();
             Balance savedBalance = saveBalance(updateBalance);
             log.info("Balance was successful updated an account:");
             return savedBalance;
@@ -58,35 +56,31 @@ public class BalanceService {
         }
     }
 
-    @Transactional
-    public void authorizePayment(String accountNumber, BigDecimal amount) {
-        Balance balance = getBalance(accountNumber);
+    public Balance authorizePayment(Balance balance, BigDecimal amount) {
         BigDecimal authorizationBalance = balance.getAuthorizationBalance();
+        String typeOperation = "authorization";
         if (balance.getAuthorizationBalance().compareTo(amount) >= 0) {
             BigDecimal newAuthorizationBalance = authorizationBalance.subtract(amount);
             balance.setAuthorizationBalance(newAuthorizationBalance);
-            saveBalance(balance);
-            log.info("Payment authorization was successful an account: {}", accountNumber);
+            log.info("Payment authorization was successful an account: {}", balance.getAccount());
+            return balance;
         } else {
-            log.info("Insufficient funds. Payment unsuccessful an account: {}", accountNumber);
+            log.info("Insufficient funds. Payment unsuccessful an account: {}", balance.getAccount());
             throw new InsufficientFundsException("Insufficient funds on account!");
         }
     }
 
-    @Transactional
-    public void clearingPayment(String accountNumber, BigDecimal amount) {
-        Balance balance = getBalance(accountNumber);
+    public void clearingPayment(Balance balance, BigDecimal amount) {
         BigDecimal authorizationBalance = balance.getAuthorizationBalance();
         BigDecimal actualBalance = balance.getActualBalance();
 
         if (authorizationBalance.compareTo(actualBalance) <= 0) {
             BigDecimal newActualBalance = actualBalance.subtract(authorizationBalance);
             balance.setActualBalance(newActualBalance);
-            Balance updatedBalance = updateBalance(accountNumber, balance);
-            saveBalance(updatedBalance);
-            log.info("Payment was successful an account: {}", accountNumber);
+            updateBalance(balance.getAccount().getNumber(), balance);
+            log.info("Payment was successful an account: {}", balance.getAccount());
         } else {
-            log.info("Payment was unsuccessful an account: {}", accountNumber);
+            log.info("Payment was unsuccessful an account: {}", balance.getAccount());
         }
     }
 
