@@ -2,6 +2,7 @@ package faang.school.accountservice.entity;
 
 import faang.school.accountservice.enums.RequestStatus;
 import faang.school.accountservice.enums.RequestType;
+import faang.school.accountservice.enums.RollbackStatus;
 import faang.school.accountservice.mapper.JsonMapper;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -57,6 +58,10 @@ public class Request {
     @Column(name = "status_details")
     private String statusDetails;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rollback_status")
+    private RollbackStatus rollbackStatus;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -65,7 +70,10 @@ public class Request {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "scheduled_at")
+    private LocalDateTime scheduledAt;
+
     @Version()
     @Column(name = "version")
-    private int version;
+    private Long version;
 }

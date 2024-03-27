@@ -9,6 +9,7 @@ import faang.school.accountservice.mapper.AccountMapper;
 import faang.school.accountservice.repository.AccountRepository;
 import faang.school.accountservice.numberGenerator.RandomNumberGenerator;
 import faang.school.accountservice.service.owner.OwnerService;
+import faang.school.accountservice.service.request.RequestExecutorService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -96,6 +98,17 @@ public class AccountServiceImpl implements AccountService {
                 account.getId(), account.getClosedAt());
         return accountMapper.toDto(account);
     }
+
+    @Override
+    @Transactional
+    public AccountDto deleteAccount(AccountDto accountDto) {
+        Account account = accountRepository.findByOwnerId(accountDto.getOwnerId())
+                .orElseThrow(() -> new faang.school.accountservice.exception.EntityNotFoundException("Account not found by owner id"));
+
+        accountRepository.delete(account);
+        return accountDto;
+    }
+
 
     private Account getAccountById(long id) {
         log.info("Попытка найти аккаунт c ID: {}", id);

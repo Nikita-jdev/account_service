@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -24,22 +25,31 @@ public class BalanceService {
     private final AccountRepository accountRepository;
     private final BalanceMapper balanceMapper;
 
-    @Transactional
-    @Retryable(retryFor = {OptimisticLockException.class}, maxAttempts = 4)
-    public BalanceDto createBalance(Long accountId) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Retryable(retryFor = {OptimisticLockException.class}, maxAttempts = 5)
+    public BalanceDto createBalance(Long ownerId) {
         log.info("Start creating balance");
-        Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new EntityNotFoundException("Account not found by ID "+accountId));
-
+        Account account = accountRepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> new EntityNotFoundException("Account not found by ID "+ownerId));
+        log.info("before creating balance");
         Balance balance = Balance.builder()
                 .account(account)
                 .authorizationBalance(BigDecimal.ZERO)
                 .clearingBalance(BigDecimal.ZERO)
                 .build();
+        log.info("after creating balance");
 
         balanceRepository.save(balance);
         log.info("Balance is created");
         return balanceMapper.toDto(balance);
+    }
+
+    public BalanceDto deleteBalance(String accountNumber) {
+        Balance balance = balanceRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new EntityNotFoundException("Balance not found by account number"));
+        BalanceDto balanceDto = balanceMapper.toDto(balance);
+        balanceRepository.delete(balance);
+        return balanceDto;
     }
 
     @Transactional

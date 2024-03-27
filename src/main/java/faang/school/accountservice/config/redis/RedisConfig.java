@@ -24,8 +24,10 @@ public class RedisConfig {
     private int port;
     @Value("${spring.data.redis.channels.create_request_channel.name}")
     private String createRequestChannelName;
-    @Value(("${spring.data.redis.channels.dms_channel.name}"))
+    @Value("${spring.data.redis.channels.dms_channel.name}")
     private String dmsChannelName;
+    @Value("${spring.data.redis.channels.open_account_channel.name}")
+    private String openAccountChannelName;
 
     private final DmsEventListener dmsEventListener;
 
@@ -53,6 +55,11 @@ public class RedisConfig {
     @Bean
     ChannelTopic dmsTopic() {
         return new ChannelTopic(dmsChannelName);
+    }
+
+    @Bean
+    ChannelTopic openAccountTopic() {
+        return new ChannelTopic(openAccountChannelName);
     }
 
     @Bean

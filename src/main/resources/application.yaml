@@ -26,6 +26,8 @@ spring:
           name: create_request_channel
         dms_channel:
           name: dms_channel
+        open_account_channel:
+          name: open_account_channel
 
   async:
     core-pool-size: 5
@@ -44,3 +46,6 @@ random:
   number-generator:
     min: 12
     max: 20
+
+account:
+  limit: 10

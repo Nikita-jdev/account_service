@@ -2,6 +2,8 @@ package faang.school.accountservice.service.account;
 
 import faang.school.accountservice.dto.AccountDto;
 
+import java.util.UUID;
+
 public interface AccountService {
 
     AccountDto getAccount(long id);
@@ -11,5 +13,7 @@ public interface AccountService {
     AccountDto blockAccount(long id);
 
     AccountDto closeAccount(long id);
+
+    AccountDto deleteAccount(AccountDto accountDto);
 
 }
