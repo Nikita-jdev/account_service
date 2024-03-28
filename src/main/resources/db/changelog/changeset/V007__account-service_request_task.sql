@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS request_task (
+    request_id UUID PRIMARY KEY,
+    handler VARCHAR(255) NOT NULL,
+    request_status VARCHAR(64) NOT NULL,
+    rollback_status VARCHAR(64) DEFAULT 'NOT_STARTED',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    version BIGINT DEFAULT 1 NOT NULL,
+    FOREIGN KEY (request_id) REFERENCES request(id)
+);
