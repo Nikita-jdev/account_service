@@ -1,11 +1,13 @@
 package faang.school.accountservice.service;
 
 import faang.school.accountservice.dto.BalanceDto;
+import faang.school.accountservice.enums.BalanceOperation;
 import faang.school.accountservice.enums.Currency;
 import faang.school.accountservice.exception.InsufficientFundsException;
 import faang.school.accountservice.mapper.BalanceMapper;
 import faang.school.accountservice.model.Balance;
 import faang.school.accountservice.repository.BalanceRepository;
+import faang.school.accountservice.service.update.UpdateBalance;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.ConcurrentModificationException;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -23,6 +24,7 @@ public class BalanceService {
 
     private final BalanceRepository balanceRepository;
     private final BalanceMapper balanceMapper;
+    private final List<UpdateBalance> balanceUpdaters;
 
     @Transactional
     public BalanceDto createBalance(Currency currency) {
@@ -34,36 +36,26 @@ public class BalanceService {
     @Transactional
     public BalanceDto deposit(String accountNumber, BigDecimal amount) {
         Balance balance = getBalance(accountNumber);
-        BigDecimal newAuthorizationBalance = balance.getAuthorizationBalance().add(amount);
-        BigDecimal newActualBalance = balance.getActualBalance().add(amount);
-        balance.setAuthorizationBalance(newAuthorizationBalance);
-        balance.setActualBalance(newActualBalance);
+        Balance updatedBalance = updateBalance(balance, amount, "DEPOSIT");
 
-        Balance saveBalance = saveBalance(balance);
         log.info("Deposit was successful an account: {}", accountNumber);
-        return balanceMapper.toDto(saveBalance);
+        return balanceMapper.toDto(updatedBalance);
     }
 
-    private Balance updateBalance(String accountNumber, Balance updateBalance) {
-        Balance balance = getBalance(accountNumber);
-        if (balance.getVersion() == updateBalance.getVersion()) {
-            updateBalance.setUpdatedAt(Instant.now());
-            Balance savedBalance = saveBalance(updateBalance);
-            log.info("Balance was successful updated an account:");
-            return savedBalance;
-        } else {
-            throw new ConcurrentModificationException("Balance has been modified");
+    private Balance updateBalance(Balance balance, BigDecimal amount, String balanceOperation) {
+        for (UpdateBalance updater : balanceUpdaters) {
+            if (updater.isApplicable(balanceOperation)) {
+                updater.update(balance, amount);
+                return saveBalance(balance);
+            }
         }
+        return saveBalance(balance);
     }
 
-    public Balance authorizePayment(Balance balance, BigDecimal amount) {
-        BigDecimal authorizationBalance = balance.getAuthorizationBalance();
-        String typeOperation = "authorization";
+    public void authorizePayment(Balance balance, BigDecimal amount) {
         if (balance.getAuthorizationBalance().compareTo(amount) >= 0) {
-            BigDecimal newAuthorizationBalance = authorizationBalance.subtract(amount);
-            balance.setAuthorizationBalance(newAuthorizationBalance);
+            updateBalance(balance, amount, "AUTHORIZATION");
             log.info("Payment authorization was successful an account: {}", balance.getAccount());
-            return balance;
         } else {
             log.info("Insufficient funds. Payment unsuccessful an account: {}", balance.getAccount());
             throw new InsufficientFundsException("Insufficient funds on account!");
@@ -75,16 +67,13 @@ public class BalanceService {
         BigDecimal actualBalance = balance.getActualBalance();
 
         if (authorizationBalance.compareTo(actualBalance) <= 0) {
-            BigDecimal newActualBalance = actualBalance.subtract(authorizationBalance);
-            balance.setActualBalance(newActualBalance);
-            updateBalance(balance.getAccount().getNumber(), balance);
+            updateBalance(balance, amount, "CLEARING");
             log.info("Payment was successful an account: {}", balance.getAccount());
         } else {
             log.info("Payment was unsuccessful an account: {}", balance.getAccount());
         }
     }
 
-    @Transactional
     public void cancelAuthorization(String accountNumber, BigDecimal amount) {
         Balance balance = getBalance(accountNumber);
         BigDecimal newAuthorizationBalance = balance.getAuthorizationBalance().add(amount);
@@ -94,7 +83,7 @@ public class BalanceService {
     }
 
     public Balance getBalance(String accountNumber) {
-        return balanceRepository.findByAccount_Number(accountNumber)
+        return balanceRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new EntityNotFoundException("Balance not found"));
     }
 

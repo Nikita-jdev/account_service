@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class Owner {
     @Column(name = "owner_type", nullable = false)
     private OwnerType ownerType;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Account> accounts;
 }

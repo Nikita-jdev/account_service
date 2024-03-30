@@ -25,8 +25,8 @@ public class PaymentService {
         try {
             accountService.accountAvailable(accountNumber);
             Balance balance = balanceService.getBalance(accountNumber);
-            Balance authorizatedBalance = balanceService.authorizePayment(balance, amount);
-            balanceService.clearingPayment(authorizatedBalance, amount);
+            balanceService.authorizePayment(balance, amount);
+            balanceService.clearingPayment(balance, amount);
             return getPaymentResultDto(true, "Payment was successful!");
         } catch (EntityNotFoundException e) {
             return getPaymentResultDto(false, "Account not found!");
