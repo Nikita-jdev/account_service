@@ -1,7 +1,6 @@
 package faang.school.accountservice.service;
 
 import faang.school.accountservice.dto.BalanceDto;
-import faang.school.accountservice.enums.BalanceOperation;
 import faang.school.accountservice.enums.Currency;
 import faang.school.accountservice.exception.InsufficientFundsException;
 import faang.school.accountservice.mapper.BalanceMapper;
