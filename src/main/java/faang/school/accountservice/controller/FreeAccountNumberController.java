@@ -21,4 +21,3 @@ public class FreeAccountNumberController {
         freeAccountNumbersService.generateNumber(count, type);
     }
 }
-
