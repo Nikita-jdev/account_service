@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -25,7 +25,7 @@ public class AccountDto {
     @NotNull
     private Currency currency;
     private Status status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private LocalDateTime closedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private Instant closedAt;
 }

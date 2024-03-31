@@ -69,7 +69,7 @@ public class AccountService {
         return accountRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Account not found"));
     }
 
-    //Два одинаковых метода. Можно сделать один общий, только не знаю в какой класс его поместить
+
     public Type convertType(String type) {
         if (!type.isBlank()) {
             try {

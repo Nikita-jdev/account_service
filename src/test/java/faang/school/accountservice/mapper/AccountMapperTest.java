@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,6 +28,9 @@ class AccountMapperTest {
 
     @BeforeEach
     public void setUp(){
+        LocalDateTime localDateTime = LocalDateTime.of(2022, 1, 1, 0, 0, 0);
+        Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
+
         owner = Owner.builder()
                 .id(1L)
                 .build();
@@ -37,8 +42,8 @@ class AccountMapperTest {
                 .accountType(Type.DEBIT)
                 .currency(Currency.USD)
                 .status(Status.ACTIVE)
-                .createdAt(LocalDateTime.of(2022, 1, 1, 0, 0, 0))
-                .updatedAt(LocalDateTime.of(2022, 1, 1, 0, 0, 0))
+                .createdAt(instant)
+                .updatedAt(instant)
                 .closedAt(null)
                 .build();
 
@@ -49,8 +54,8 @@ class AccountMapperTest {
                 .accountType(Type.DEBIT)
                 .currency(Currency.USD)
                 .status(Status.ACTIVE)
-                .createdAt(LocalDateTime.of(2022, 1, 1, 0, 0, 0))
-                .updatedAt(LocalDateTime.of(2022, 1, 1, 0, 0, 0))
+                .createdAt(instant)
+                .updatedAt(instant)
                 .closedAt(null)
                 .build();
     }
