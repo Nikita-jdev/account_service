@@ -1,7 +1,7 @@
 package faang.school.accountservice.mapper;
 
 import faang.school.accountservice.dto.AccountDto;
-import faang.school.accountservice.model.Account;
+import faang.school.accountservice.entity.Account;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

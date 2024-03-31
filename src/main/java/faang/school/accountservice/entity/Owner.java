@@ -1,4 +1,4 @@
-package faang.school.accountservice.model;
+package faang.school.accountservice.entity;
 
 import faang.school.accountservice.enums.OwnerType;
 import jakarta.persistence.CascadeType;
@@ -9,7 +9,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;

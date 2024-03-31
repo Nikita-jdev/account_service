@@ -21,28 +21,31 @@ public class FreeAccountNumbersService {
 
     private final FreeAccountNumbersRepository freeAccountNumbersRepository;
     private final FreeAccountNumbersSeqRepository freeAccountNumbersSeqRepository;
+    private static final long NUMBER_PREFIX = 1000_0000_0000_0L;
 
     @Transactional
     @Retryable(retryFor = OptimisticLockException.class, backoff = @Backoff(delay = 100))
     public void generateNumber(int batchSize, AccountType accountType) {
         List<FreeAccountNumber> freeAccountNumbers = new ArrayList<>();
         long seq = freeAccountNumbersSeqRepository.getSeqByType(accountType.name());
-        freeAccountNumbersSeqRepository.incrementCounter(accountType.name(), batchSize);
-        for (long i = seq + 1; i <= batchSize; i++) {
-            freeAccountNumbers.add(FreeAccountNumber.builder()
-                    .accountNumber(String.valueOf(accountType.getPrefix() * 1000_0000_0000_0L + i))
-                    .accountType(accountType)
-                    .build());
+        int updateSuccess = freeAccountNumbersSeqRepository.incrementCounter(accountType.name(), batchSize);
+        if (updateSuccess == 1) {
+            for (long i = seq + 1; i <= batchSize; i++) {
+                freeAccountNumbers.add(FreeAccountNumber.builder()
+                        .accountNumber(String.valueOf(accountType.getPrefix() * NUMBER_PREFIX + i))
+                        .accountType(accountType)
+                        .build());
+            }
+        } else {
+            throw new OptimisticLockException();
         }
         freeAccountNumbersRepository.saveAll(freeAccountNumbers);
     }
 
     @Transactional
-    public String getNumber(AccountType type, Consumer<String> consumer) {
+    public String getNumber(AccountType type) {
         String freeAccountNumber = freeAccountNumbersRepository.findFirstAndDeleteNumber(type.name());
-        consumer.accept(freeAccountNumber);
 
         return freeAccountNumber;
     }
-
 }

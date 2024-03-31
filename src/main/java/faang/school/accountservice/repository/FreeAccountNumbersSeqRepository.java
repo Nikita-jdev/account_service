@@ -16,7 +16,7 @@ public interface FreeAccountNumbersSeqRepository extends JpaRepository<FreeAccou
             WHERE account_type = :type
             """)
     @Modifying
-    void incrementCounter(String type, int batchSize);
+    int incrementCounter(String type, int batchSize);
 
     @Query(nativeQuery = true, value = """
             SELECT count FROM free_account_numbers_sequence

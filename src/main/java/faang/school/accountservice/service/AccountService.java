@@ -3,7 +3,7 @@ package faang.school.accountservice.service;
 import faang.school.accountservice.dto.AccountDto;
 import faang.school.accountservice.enums.Status;
 import faang.school.accountservice.mapper.AccountMapper;
-import faang.school.accountservice.model.Account;
+import faang.school.accountservice.entity.Account;
 import faang.school.accountservice.repository.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +28,7 @@ public class AccountService {
 
     @Retryable(retryFor = OptimisticLockException.class)
     public AccountDto open(AccountDto accountDto) {
-        String number = freeAccountNumbersService.getNumber(accountDto.getType(),
-                n -> System.out.println("Generated number account number: " + n));
+        String number = freeAccountNumbersService.getNumber(accountDto.getType());
         accountDto.setStatus(Status.ACTIVE);
         accountDto.setNumber(number);
         Account newAccount = accountRepository.save(accountMapper.toEntity(accountDto));
