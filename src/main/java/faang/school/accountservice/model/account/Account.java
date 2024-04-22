@@ -34,7 +34,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
+    @Column(name = "number", nullable = false)
     @Pattern(regexp = "\\d{12,20}", message = "Account number can only contain digits and be from 12 to 20 characters long")
     private String number;
 
@@ -48,7 +48,7 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
-    @Column(nullable = false)
+    @Column(name = "currency", nullable = false)
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
@@ -70,6 +70,7 @@ public class Account {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime closedAt;
 
+    @Column(name = "version")
     @Version
     private Long version;
 }
