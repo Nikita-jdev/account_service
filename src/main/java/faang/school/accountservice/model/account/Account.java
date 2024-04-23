@@ -20,14 +20,14 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "accounts")
+@Table(name = "account")
 public class Account {
 
     @Id
@@ -38,11 +38,8 @@ public class Account {
     @Pattern(regexp = "\\d{12,20}", message = "Account number can only contain digits and be from 12 to 20 characters long")
     private String number;
 
-    @Column(name = "owner_id")
+    @Column(name = "owner_id", nullable = false)
     private long ownerId;
-
-    @Column(name = "project_id")
-    private long projectId;
 
     @Column(name = "account_type", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -59,18 +56,18 @@ public class Account {
     @Column(name = "created_at")
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "updated_at")
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column(name = "closed_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime closedAt;
+    private Instant closedAt;
 
-    @Column(name = "version")
+    @Column(name = "version", nullable = false)
     @Version
     private Long version;
 }
