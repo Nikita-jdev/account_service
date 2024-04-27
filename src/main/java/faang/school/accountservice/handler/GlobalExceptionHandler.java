@@ -1,4 +1,4 @@
-package faang.school.accountservice.controller;
+package faang.school.accountservice.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
