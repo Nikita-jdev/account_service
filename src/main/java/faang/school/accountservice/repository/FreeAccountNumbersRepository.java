@@ -7,34 +7,29 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class FreeAccountNumbersRepository {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+public class FreeAccountNumberRepositoryImpl implements CrudRepository{
 
-    @Transactional
-    public String createFreeAccountNumber(String accountType) {
-        // Инкрементировать счетчик
-        int nextAccountNumber = jdbcTemplate.update("UPDATE account_numbers_sequence SET current_value = current_value + 1 WHERE account_type = ?", accountType);
+    @PersistenceContext
+    private EntityManager entityManager;
 
-        // Получить новый номер счетчика
-        int newAccountNumber = jdbcTemplate.queryForObject("SELECT current_value FROM account_numbers_sequence WHERE account_type = ?", Integer.class, accountType);
-
-        // Сформировать номер счета
-        String formattedAccountNumber = formatAccountNumber(accountType, newAccountNumber);
-
-        // Добавить номер счета в free_account_numbers
-        jdbcTemplate.update("INSERT INTO free_account_numbers (account_type, account_number) VALUES (?, ?)", accountType, formattedAccountNumber);
-
-        return formattedAccountNumber;
-    }
-
-    @Transactional
-    public String findAndDeleteFreeAccountNumber(String accountType) {
-        return jdbcTemplate.queryForObject("DELETE FROM free_account_numbers WHERE account_type = ? ORDER BY id LIMIT 1 RETURNING account_number", String.class, accountType);
-    }
-
-    private String formatAccountNumber(String accountType, int accountNumber) {
+    @Override
+    public FreeAccountNumber createFreeAccountNumber() {
+        Long nextNumber = entityManager.createNativeQuery("SELECT nextval('free_account_numbers_seq')")
+                .getSingleResult() instanceof Long ? (Long) entityManager.createNativeQuery("SELECT nextval('free_account_numbers_seq')")
+                .getSingleResult() : null;
+        if (nextNumber != null) {
+            FreeAccountNumber accountNumber = new FreeAccountNumber(nextNumber);
+            entityManager.persist(accountNumber);
+            return accountNumber;
+        }
         return null;
     }
 
+    @Override
+    @Transactional
+    public FreeAccountNumber getAndDeleteFirstFreeAccountNumber() {
+        Query query = entityManager.createNativeQuery("DELETE FROM free_account_numbers RETURNING number LIMIT 1");
+        Object result = query.getSingleResult();
+        return result instanceof Long ? new FreeAccountNumber((Long) result) : null;
+    }
 }
