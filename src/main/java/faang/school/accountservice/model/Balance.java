@@ -12,12 +12,15 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -42,10 +45,10 @@ public class Balance {
     @Column(name = "created_at")
     private LocalDateTime created_at;
 
-    @CreationTimestamp
+    @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_at")
-    private LocalDateTime last_updated_at;
+    @Column(name = "last_update_at")
+    private LocalDateTime last_update_at;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "version")
