@@ -16,6 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AccountService {
+
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
     private final AccountValidator accountValidator;
@@ -52,8 +53,12 @@ public class AccountService {
         account.setAccountStatus(AccountStatus.CLOSED);
     }
 
+    public Account getAccountById(long accountId) {
+        return getAccountFromRepository(accountId);
+    }
+
     private Account getAccountFromRepository(long accountId) {
         return accountRepository.findById(accountId).orElseThrow(
                 () -> new EntityNotFoundException("Account doesn't exist by id " + accountId));
-    }
+        }
 }
