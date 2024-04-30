@@ -10,6 +10,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -41,7 +43,8 @@ public class Account {
     @Pattern(regexp = "\\d{12,20}", message = "Account number can only contain digits and be from 12 to 20 characters long")
     private String number;
 
-    @OneToOne(mappedBy = "account")
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
     private Owner owner;
 
     @Column(name = "account_type", nullable = false)
