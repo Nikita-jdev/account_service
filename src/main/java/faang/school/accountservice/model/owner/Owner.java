@@ -28,7 +28,7 @@ public class Owner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne(mappedBy = "owner")
+    @OneToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
