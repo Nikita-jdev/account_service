@@ -12,9 +12,11 @@ import java.util.List;
 public interface AccountMapper {
 
     @Mapping(source = "owner.id", target = "ownerId")
+    @Mapping(source = "balance.id", target = "balanceId")
     AccountDto toDto(Account account);
 
     @Mapping(source = "ownerId", target = "owner.id")
+    @Mapping(source = "balanceId", target = "balance.id")
     Account toEntity(AccountDto accountDto);
 
     List<AccountDto> toDto(List<Account> accounts);

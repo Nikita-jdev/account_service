@@ -21,6 +21,7 @@ public class AccountDto {
     private long ownerId;
     @NotNull(message = "Account type can't be empty")
     private AccountType accountType;
+    private long balanceId;
     @NotNull(message = "Account currency can't be empty")
     private Currency currency;
     private AccountStatus accountStatus;
