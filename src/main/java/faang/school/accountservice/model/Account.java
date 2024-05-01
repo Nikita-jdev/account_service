@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 
 
 @Builder
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -26,7 +28,7 @@ public class Account {
     @Id()
     private long id;
 
-    @Column(name = "number", nullable = false, length = 20)
+    @Column(name = "number", nullable = false, length = 20, unique = true)
     @Size(min = 12, max = 20, message = "The number account length must be from 12 to 20 characters.")
     private String number;
 
@@ -64,7 +66,7 @@ public class Account {
     private LocalDateTime closedAt;
 
     @Version
-    @Column(name = "version", nullable = false, columnDefinition = "BIGINT DEFAULT 1")
+    @Column(name = "version", nullable = false)
     private long version;
 
 }
