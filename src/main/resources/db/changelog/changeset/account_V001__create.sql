@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS account (
     updated_at timestamptz DEFAULT CURRENT_TIMESTAMP,
     closed_at timestamptz,
     version BIGINT NOT NULL
-);
+    );
 
 CREATE INDEX IF NOT EXISTS idx_owner_id ON account (owner_id);
 
