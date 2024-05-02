@@ -22,17 +22,11 @@ public class AccountDto {
     private String number;
 
     @NotNull(message = "The owner id cannot be empty")
-    private Long ownerId;
-
-    @NotNull(message = "The owner type cannot be empty")
-    private OwnerType ownerType;
+    private OwnerDto owner;
 
     @NotNull(message = "The account type cannot be empty")
     private AccountType accountType;
 
     @NotNull(message = "The currency cannot be empty")
     private Currency currency;
-
-    @NotNull(message = "The account status cannot be empty")
-    private AccountStatus accountStatus;
 }

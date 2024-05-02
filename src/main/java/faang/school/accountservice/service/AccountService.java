@@ -5,11 +5,20 @@ import faang.school.accountservice.enums.AccountStatus;
 import faang.school.accountservice.exception.EntityNotFoundException;
 import faang.school.accountservice.mapper.AccountMapper;
 import faang.school.accountservice.model.Account;
+import faang.school.accountservice.model.Owner;
 import faang.school.accountservice.repository.AccountRepository;
+import faang.school.accountservice.repository.OwnerRepository;
 import faang.school.accountservice.validation.AccountValidate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,43 +26,63 @@ public class AccountService {
     private final AccountMapper accountMapper;
     private final AccountRepository accountRepository;
     private final AccountValidate accountValidate;
+    private final OwnerRepository ownerRepository;
 
     @Transactional
-    public AccountDto open(AccountDto accountDto){
+    @Retryable(retryFor = OptimisticLockingFailureException.class, backoff = @Backoff(delay = 3000L))
+    public AccountDto open(AccountDto accountDto) {
         Account account = accountMapper.toEntity(accountDto);
         accountValidate.validate(account);
-        return accountMapper.toDto(accountRepository.save(account));
+        account.setAccountStatus(AccountStatus.ACTIVE);
+        setUpOwner(account);
+        Account accountNew = accountRepository.save(account);
+        return accountMapper.toDto(accountNew);
     }
 
     @Transactional(readOnly = true)
-    public AccountDto get(long accountId){
+    public AccountDto get(long accountId) {
         return accountMapper.toDto(findAccountById(accountId));
     }
 
     @Transactional
-    public void block(long accountId){
+    @Retryable(retryFor = OptimisticLockingFailureException.class, backoff = @Backoff(delay = 3000L))
+    public void block(long accountId) {
         Account account = findAccountById(accountId);
         account.setAccountStatus(AccountStatus.FROZEN);
         accountRepository.save(account);
     }
 
     @Transactional
-    public void unBlock(long accountId){
+    @Retryable(retryFor = OptimisticLockingFailureException.class, backoff = @Backoff(delay = 3000L))
+    public void unBlock(long accountId) {
         Account account = findAccountById(accountId);
         account.setAccountStatus(AccountStatus.ACTIVE);
         accountRepository.save(account);
     }
 
     @Transactional
-    public void delete(long accountId){
+    @Retryable(retryFor = OptimisticLockingFailureException.class, backoff = @Backoff(delay = 3000L))
+    public void delete(long accountId) {
         Account account = findAccountById(accountId);
         account.setAccountStatus(AccountStatus.CLOSED);
+        account.setClosedAt(Instant.now());
         accountRepository.save(account);
     }
 
     @Transactional(readOnly = true)
-    public Account findAccountById(long accountId){
+    public Account findAccountById(long accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Account with id: %d not found", accountId)));
+    }
+
+    private void setUpOwner(Account account) {
+        Owner owner = account.getOwner();
+        Optional<Owner> optionalOwner = ownerRepository.findByAccountIdAndOwnerType(owner.getAccountId(), owner.getOwnerType());
+        if (optionalOwner.isPresent()) {
+            account.setOwner(optionalOwner.get());
+            return;
+        }
+        Owner ownerNew = ownerRepository.save(owner);
+        account.setOwner(ownerNew);
     }
 }

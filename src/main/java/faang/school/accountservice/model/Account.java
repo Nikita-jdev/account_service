@@ -3,7 +3,6 @@ package faang.school.accountservice.model;
 import faang.school.accountservice.enums.AccountStatus;
 import faang.school.accountservice.enums.AccountType;
 import faang.school.accountservice.enums.Currency;
-import faang.school.accountservice.enums.OwnerType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 
 @Builder
@@ -25,19 +24,16 @@ import java.time.LocalDateTime;
 public class Account {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id()
+    @Id
     private long id;
 
     @Column(name = "number", nullable = false, length = 20, unique = true)
     @Size(min = 12, max = 20, message = "The number account length must be from 12 to 20 characters.")
     private String number;
 
-    @Column(name = "owner_id", nullable = false)
-    private long ownerId;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "owner_type", nullable = false)
-    private OwnerType ownerType;
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private Owner owner;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type", nullable = false)
@@ -54,19 +50,19 @@ public class Account {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "closed_at")
-    private LocalDateTime closedAt;
+    private Instant closedAt;
 
     @Version
-    @Column(name = "version", nullable = false)
+    @Column(nullable = false)
     private long version;
 
 }

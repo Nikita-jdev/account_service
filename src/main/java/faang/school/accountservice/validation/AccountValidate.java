@@ -6,7 +6,10 @@ import faang.school.accountservice.enums.OwnerType;
 import faang.school.accountservice.exception.EntityNotFoundException;
 import faang.school.accountservice.model.Account;
 import feign.FeignException;
+import io.netty.handler.timeout.ReadTimeoutException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,15 +21,18 @@ public class AccountValidate {
         checkOwner(account);
     }
 
+    @Retryable(retryFor = ReadTimeoutException.class, backoff = @Backoff(delay = 2000))
     private void checkOwner(Account account) {
+        OwnerType ownerType = account.getOwner().getOwnerType();
+        long ownerId = account.getOwner().getAccountId();
         try {
-            if (OwnerType.USER.equals(account.getOwnerType())) {
-                userServiceClient.getUser(account.getOwnerId());
-            } else if (OwnerType.PROJECT.equals(account.getOwnerType())) {
-                projectServiceClient.getProject(account.getOwnerId());
+            if (OwnerType.USER.equals(ownerType)) {
+                userServiceClient.getUser(ownerId);
+            } else if (OwnerType.PROJECT.equals(ownerType)) {
+                projectServiceClient.getProject(ownerId);
             }
         } catch (FeignException ex) {
-            throw new EntityNotFoundException(String.format("%s with id %d not found", account.getOwnerType(), account.getOwnerId()));
+            throw new EntityNotFoundException(String.format("%s with id %d not found", ownerType, ownerId));
         }
     }
 
