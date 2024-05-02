@@ -1,30 +1,61 @@
 package faang.school.accountservice.service;
 
+import faang.school.accountservice.model.account.numbers.AccountNumbersSequence;
+import faang.school.accountservice.model.account.numbers.FreeAccountNumber;
 import faang.school.accountservice.repository.AccountNumbersSequenceRepository;
-import faang.school.accountservice.repository.FreeAccountNumberRepository;
+import faang.school.accountservice.repository.FreeAccountNumbersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class FreeAccountNumbersService {
 
-    private final FreeAccountNumberRepository freeAccountNumberRepository;
+    private final FreeAccountNumbersRepository freeAccountNumbersRepository;
     private final AccountNumbersSequenceRepository accountNumbersSequenceRepository;
 
-    public String generateNewAccountNumber(String accountType) {
-        FreeAccountNumber freeAccountNumber = freeAccountNumberRepository.getAndDeleteFirstFreeAccountNumber();
+    public void generateAndProcessFreeAccountNumber(String accountType, AccountAction accountAction) {
+        synchronized (accountType) {
+            AccountNumbersSequence sequence = accountNumbersSequenceRepository.findById(Long.valueOf(accountType))
+                    .orElseGet(() -> {
+                        accountNumbersSequenceRepository.createSequenceForAccountType(accountType);
+                        return new AccountNumbersSequence();
+                    });
+            long currentNumber = sequence.getCurrentNumber();
 
-        if (freeAccountNumber != null) {
-            return freeAccountNumber.getAccountNumber();
+            do {
+                currentNumber = accountNumbersSequenceRepository.incrementSequenceIfValueMatches(accountType, currentNumber) ? currentNumber + 1 : currentNumber;
+            } while (!accountNumbersSequenceRepository.incrementSequenceIfValueMatches(accountType, currentNumber));
+
+            String accountNumber = generateAccountNumber(accountType, currentNumber);
+
+            try {
+                FreeAccountNumber freeAccountNumber = new FreeAccountNumber(accountType, accountNumber);
+                freeAccountNumbersRepository.save(freeAccountNumber);
+                accountAction.perform(accountNumber);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to process account number: " + accountNumber, e);
+            }
         }
+    }
 
-        accountNumbersSequenceRepository.incrementSequenceIfValueMatches(accountType, 0); // Инкремент с 0
-        long nextNumber = accountNumbersSequenceRepository.getCurrentNumber(accountType); // Получить текущее значение счетчика
-        String accountNumber = accountType + String.format("%012d", nextNumber); // Форматирование номера
+    private String generateAccountNumber(String accountType, Long currentNumber) {
+        String accountNumberPrefix = getAccountNumberPrefix(accountType);
+        String formattedCurrentNumber = String.format("%010d", currentNumber);
+        return accountNumberPrefix + formattedCurrentNumber;
+    }
 
-        freeAccountNumberRepository.create(nextNumber, accountType);
+    private String getAccountNumberPrefix(String accountType) {
+        return switch (accountType) {
+            case "DEBIT" -> "DEBIT-";
+            case "SAVINGS" -> "SAVINGS-";
+            default -> "";
+        };
+    }
 
-        return accountNumber;
+    @FunctionalInterface
+    public interface AccountAction {
+        void perform(String accountNumber);
     }
 }
+
