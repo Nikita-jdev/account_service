@@ -78,11 +78,6 @@ public class AccountService {
     private void setUpOwner(Account account) {
         Owner owner = account.getOwner();
         Optional<Owner> optionalOwner = ownerRepository.findByAccountIdAndOwnerType(owner.getAccountId(), owner.getOwnerType());
-        if (optionalOwner.isPresent()) {
-            account.setOwner(optionalOwner.get());
-            return;
-        }
-        Owner ownerNew = ownerRepository.save(owner);
-        account.setOwner(ownerNew);
+        optionalOwner.ifPresentOrElse(account::setOwner, () -> {});
     }
 }
