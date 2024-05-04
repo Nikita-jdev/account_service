@@ -1,6 +1,7 @@
 package faang.school.accountservice.model.account.numbers;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,9 +17,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FreeAccountNumber {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private FreeAccountId id;
 
     @Column(name = "account_type", nullable = false, unique = true)
     private String accountType;

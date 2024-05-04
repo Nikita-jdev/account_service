@@ -1,6 +1,5 @@
 package faang.school.accountservice.service;
 
-import faang.school.accountservice.dto.BalanceDto;
 import faang.school.accountservice.mapper.BalanceMapperImpl;
 import faang.school.accountservice.model.account.Account;
 import faang.school.accountservice.model.balance.Balance;
