@@ -8,6 +8,9 @@ import faang.school.accountservice.repository.AccountRepository;
 import faang.school.accountservice.validation.AccountValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +43,7 @@ public class AccountService {
     }
 
     @Transactional
+    @Retryable(retryFor = OptimisticLockingFailureException.class, backoff = @Backoff(delay = 3000, multiplier = 1.5))
     public void block(long userId, long accountId) {
         accountValidator.validateAccountOwner(userId, accountId);
         Account account = getAccountFromRepository(accountId);
@@ -47,6 +51,7 @@ public class AccountService {
     }
 
     @Transactional
+    @Retryable(retryFor = OptimisticLockingFailureException.class, backoff = @Backoff(delay = 3000, multiplier = 1.5))
     public void close(long userId, long accountId) {
         accountValidator.validateAccountOwner(userId, accountId);
         Account account = getAccountFromRepository(accountId);

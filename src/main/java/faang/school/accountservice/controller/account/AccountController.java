@@ -5,7 +5,6 @@ import faang.school.accountservice.dto.account.AccountDto;
 import faang.school.accountservice.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/account")
@@ -37,7 +35,7 @@ public class AccountController {
     }
 
     @GetMapping
-    public List<AccountDto> getAllOwnerAccounts(){
+    public List<AccountDto> getAllOwnerAccounts() {
         long userId = userContext.getUserId();
         return accountService.getAllOwnerAccounts(userId);
     }
