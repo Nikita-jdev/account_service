@@ -25,6 +25,6 @@ public class Owner {
     @Enumerated(value = EnumType.STRING)
     private OwnerType ownerType;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Account> accounts;
 }

@@ -31,7 +31,7 @@ public class Account {
     @Size(min = 12, max = 20, message = "The number account length must be from 12 to 20 characters.")
     private String number;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id", nullable = false)
     private Owner owner;
 

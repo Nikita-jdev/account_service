@@ -19,4 +19,3 @@ CREATE TABLE IF NOT EXISTS account (
     );
 
 CREATE INDEX IF NOT EXISTS idx_owner_id ON account (owner_id);
-
