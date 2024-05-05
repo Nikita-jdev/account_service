@@ -1,4 +1,8 @@
 spring:
+  mvc:
+    servlet:
+      path: /api/v1  # Set default path for Spring MVC controllers
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
@@ -20,9 +24,6 @@ spring:
 server:
   port: 8090
 
-api:
-  v1: "/api/v1"
-
 services:
   user-service:
     name: user-service
@@ -32,6 +33,7 @@ services:
     name: project-service
     host: http://localhost
     port: 8082
+
 
 
 logging:
