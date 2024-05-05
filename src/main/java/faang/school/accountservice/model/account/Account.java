@@ -33,7 +33,7 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "account", indexes = @Index(name = "owner_idx", columnList = "owner_id"))
+@Table(name = "account", indexes = @Index(name = "account_owner_idx", columnList = "owner_id"))
 public class Account {
 
     @Id
