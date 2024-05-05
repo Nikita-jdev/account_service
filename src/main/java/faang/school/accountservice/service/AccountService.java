@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -35,8 +34,7 @@ public class AccountService {
         accountValidate.validate(account);
         account.setAccountStatus(AccountStatus.ACTIVE);
         setUpOwner(account);
-        Account accountNew = accountRepository.save(account);
-        return accountMapper.toDto(accountNew);
+        return accountMapper.toDto(accountRepository.save(account));
     }
 
     @Transactional(readOnly = true)
