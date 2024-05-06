@@ -5,10 +5,12 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.data.relational.core.mapping.Embedded;
 
 @Embeddable
 @AllArgsConstructor
+@Data
 public class FreeAccountId {
 
     @Column(name= "type", nullable = false)
