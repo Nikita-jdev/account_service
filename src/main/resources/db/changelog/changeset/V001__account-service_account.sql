@@ -1,5 +1,5 @@
 CREATE TABLE owner (
-    id         BIGSERIAL PRIMARY KEY,
+    id         BIGSERIAL PRIMARY KEY UNIQUE,
     type       VARCHAR(128) DEFAULT 0 NOT NULL,
     owner_id   BIGINT NOT NULL UNIQUE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
@@ -14,13 +14,13 @@ CREATE TABLE currency
 );
 
 CREATE TABLE account (
-    id             BIGSERIAL     PRIMARY KEY,
+    id             BIGSERIAL     PRIMARY KEY UNIQUE,
     number         VARCHAR(20)   NOT NULL UNIQUE CHECK (LENGTH(number) >= 12 AND number SIMILAR TO '[0-9]+'),
     owner_id       BIGINT        NOT NULL,
     type           VARCHAR(128)  NOT NULL,
     currency_id    VARCHAR(3)    NOT NULL,
     status         VARCHAR(64)   NOT NULL DEFAULT 0,
-    status_details VARCHAR(1024),
+    status_details VARCHAR(128),
     created_at     TIMESTAMPTZ   DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMPTZ   ON UPDATE CURRENT_TIMESTAMP,
     closed_at      TIMESTAMPTZ,

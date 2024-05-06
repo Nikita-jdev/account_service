@@ -1,4 +1,4 @@
-package faang.school.accountservice.enums;
+package faang.school.accountservice.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "account")
-public class Owner {
+@Table(name = "currency")
+public class Currency {
 
 }
