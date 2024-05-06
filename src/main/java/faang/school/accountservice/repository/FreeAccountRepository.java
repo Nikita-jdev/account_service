@@ -31,7 +31,4 @@ public interface FreeAccountRepository extends JpaRepository<FreeAccountNumber, 
                         RETURNING fan.account_number, fan.type
                     """)
     FreeAccountNumber findAndDeleteFirstFreeAccountNumber(String type);
-
-    @Transactional
-    void deleteByAccountNumber(Long accountNumber);
 }

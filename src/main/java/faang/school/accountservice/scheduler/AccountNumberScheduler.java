@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AccountNumberScheduler {
 
-    @Value("$(account.number.batch.size)")
+    @Value("${account.number.batch.size}")
     private int batchSize;
 
     private final FreeAccountNumbersService freeAccountNumbersService;
