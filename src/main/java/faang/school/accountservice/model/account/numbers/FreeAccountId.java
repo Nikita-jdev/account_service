@@ -6,14 +6,13 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.relational.core.mapping.Embedded;
 
 @Embeddable
 @AllArgsConstructor
 @Data
 public class FreeAccountId {
 
-    @Column(name= "type", nullable = false)
+    @Column(name = "type", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private AccountType type;
 
