@@ -36,8 +36,7 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "currency_id", nullable = false)
-    private Currency currency; //TODO непонятно пока, нужно подумать, если я делаю таблицу,
-    // и к ней сущность, то тогда мне нужно удалить CurrencyType в пакете энамс, он же не нужен получается
+    private Currency currency;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "status", nullable = false)

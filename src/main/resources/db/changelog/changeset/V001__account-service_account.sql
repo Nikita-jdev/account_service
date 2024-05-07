@@ -6,11 +6,12 @@ CREATE TABLE owner (
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE currency
-(
-    id   BIGSERIAL    PRIMARY KEY,
-    code VARCHAR(32)  NOT NULL UNIQUE,
-    name VARCHAR(128) NOT NULL UNIQUE
+CREATE TABLE currency (
+    id       BIGSERIAL    PRIMARY KEY,
+    country  VARCHAR(128) NOT NULL,
+    currency VARCHAR(128) NOT NULL,
+    code     CHAR(3)      NOT NULL,
+    number   CHAR(3)      NOT NULL
 );
 
 CREATE TABLE account (
@@ -32,3 +33,7 @@ CREATE TABLE account (
 
 CREATE INDEX index_number_payment ON account (number);
 CREATE INDEX index_owner_id ON account (owner_id);
+
+INSERT INTO currency (country, currency, code, number) VALUES ('USA', 'US Dollar', 'USD', '840');
+INSERT INTO currency (country, currency, code, number) VALUES ('The European Union', 'Euro', 'EUR', '978');
+INSERT INTO currency (country, currency, code, number) VALUES ('Russia', 'Russian Ruble', 'RUB', '643');

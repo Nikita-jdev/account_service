@@ -1,5 +1,15 @@
 package faang.school.accountservice.enums;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum Status {
-    //TODO: пока пусто, после проверки буду заполнять =)
+    ACTIVE("active"),
+    FROZEN("frozen"),
+    CLOSED("closed"),
+    BLOCKED("blocked");
+
+    private final String accountStatus;
 }
