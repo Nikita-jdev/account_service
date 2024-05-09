@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -34,8 +34,8 @@ public class Account {
     @Column(name = "type", nullable = false)
     private AccountType type;
 
-    @ManyToOne
-    @JoinColumn(name = "currency_id", nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "currency", nullable = false)
     private Currency currency;
 
     @Enumerated(EnumType.ORDINAL)
@@ -48,16 +48,16 @@ public class Account {
     @CreationTimestamp
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Column(name = "closed_at")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime closingDate;
+    private Instant closingDate;
 
     @Version
     @Column(name = "version")

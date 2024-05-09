@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum AccountType {
-    //TODO: значения в скобках тут надо писать или вынести в конфиг?
-    // и что лучше писать цифры или текстом тип счета, например - "кредитный счет",
-    // "Иностранный счет", нам в будущем нужно будет записи в скобках как-то использовать?
-    // я думаю, если только типа для конкатенации строк и вывода какого-то ответа или все это лишнее?
+
     PHYSICAL_PERSONS_ACCOUNT("4400"),
     LEGAL_ENTITIES_ACCOUNT("4500"),
     PAYMENT_ACCOUNT("5100"),
