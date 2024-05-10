@@ -8,10 +8,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AccountNumbersSequenceRepository extends JpaRepository<AccountNumberSequence, String> {
+
     @Query(nativeQuery = true, value = """
-            UPDATE account_number_sequence SET counter = counter + :batchSize
+            UPDATE account_number_sequence
+            SET counter = counter + :batchSize
             WHERE type = :type
-            RETURNING type, counter, old.counter AS initialValue
+            RETURNING type, counter, old.counter AS initialValue;
             """)
     @Modifying
     AccountNumberSequence incrementCounter(String type, int batchSize);

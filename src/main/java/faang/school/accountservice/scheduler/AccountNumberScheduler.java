@@ -1,6 +1,6 @@
 package faang.school.accountservice.scheduler;
 
-import faang.school.accountservice.model.account.numbers.AccountType;
+import faang.school.accountservice.enums.AccountType;
 import faang.school.accountservice.service.FreeAccountNumbersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
