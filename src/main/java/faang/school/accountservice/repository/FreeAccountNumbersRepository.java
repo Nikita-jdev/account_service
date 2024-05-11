@@ -1,7 +1,7 @@
 package faang.school.accountservice.repository;
 
-import faang.school.accountservice.entity.AccountNumber;
-import faang.school.accountservice.entity.AccountNumberId;
+import faang.school.accountservice.model.AccountNumber;
+import faang.school.accountservice.model.AccountNumberId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,5 +21,7 @@ public interface FreeAccountNumbersRepository extends JpaRepository<AccountNumbe
                              RETURNING account_number, type
                             """)
     @Modifying
-    Optional<AccountNumber> getAccountNumber(String type);
+    Optional<AccountNumber> getFreeNumber(String type);
+
+    AccountNumber findByNumber(long number);
 }

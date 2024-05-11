@@ -1,8 +1,8 @@
 package faang.school.accountservice.service;
 
-import faang.school.accountservice.entity.AccountNumber;
-import faang.school.accountservice.entity.AccountNumberId;
-import faang.school.accountservice.entity.AccountSequence;
+import faang.school.accountservice.model.AccountNumber;
+import faang.school.accountservice.model.AccountNumberId;
+import faang.school.accountservice.model.AccountSequence;
 import faang.school.accountservice.repository.AccountNumbersSequenceRepository;
 import faang.school.accountservice.repository.FreeAccountNumbersRepository;
 import jakarta.transaction.Transactional;
@@ -45,7 +45,7 @@ public class FreeAccountNumbersService {
     @Transactional
     public void createAccountNumber(String type, Consumer<AccountNumber> consumer) {
         validationNumber(type);
-        Optional<AccountNumber> accountNumber = freeAccountNumbersRepository.getAccountNumber(type);
+        Optional<AccountNumber> accountNumber = freeAccountNumbersRepository.getFreeNumber(type);
         consumer.accept(freeAccountNumbersRepository.save(accountNumber.get()));
     }
 
@@ -58,7 +58,7 @@ public class FreeAccountNumbersService {
     }
 
     private void validationNumber(String type) {
-        if (freeAccountNumbersRepository.getAccountNumber(type).isEmpty()) {
+        if (freeAccountNumbersRepository.getFreeNumber(type).isEmpty()) {
             generatedNumbers(type);
         }
     }

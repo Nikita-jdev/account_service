@@ -1,6 +1,5 @@
-package faang.school.accountservice.entity;
+package faang.school.accountservice.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
