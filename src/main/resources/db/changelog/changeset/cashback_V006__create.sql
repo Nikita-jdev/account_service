@@ -30,3 +30,6 @@ CREATE TABLE merchant_mapping (
 CREATE INDEX idx_merchant_mapping_cashback_tariff_id ON merchant_mapping(cashback_tariff_id);
 CREATE INDEX idx_merchant_mapping_merchant_id ON merchant_mapping(merchant_id);
 CREATE INDEX idx_merchant_mapping_composite ON merchant_mapping(cashback_tariff_id, merchant_id);
+
+ALTER TABLE account
+ADD cashback_tariff VARCHAR(32) NOT NULL;
