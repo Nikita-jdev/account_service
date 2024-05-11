@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface FreeAccountNumbersRepository extends JpaRepository<AccountNumber, AccountNumberId> {
     @Query(nativeQuery = true, value = """
@@ -19,5 +21,5 @@ public interface FreeAccountNumbersRepository extends JpaRepository<AccountNumbe
                              RETURNING account_number, type
                             """)
     @Modifying
-    AccountNumber getAccountNumber(String type);
+    Optional<AccountNumber> getAccountNumber(String type);
 }
