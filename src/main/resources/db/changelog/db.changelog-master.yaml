@@ -6,4 +6,4 @@ databaseChangeLog:
   - include:
       file: db/changelog/changeset/accounts_V003__add_owner_and_balance.sql
   - include:
-      file: db/changelog/changeset/V001__account-service_free-account-numbers.sql
+      file: db/changelog/changeset/accounts_V005__add_free-account-numbers.sql
