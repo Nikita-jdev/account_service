@@ -31,5 +31,4 @@ public class CashbackOperationMapping {
 
     @Column(name = "cashback_percentage", nullable = false)
     private BigDecimal cashbackPercentage;
-
 }
