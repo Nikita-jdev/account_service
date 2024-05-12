@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface CashbackOperationMappingRepository extends JpaRepository<CashbackOperationMapping, Long> {
 
-    @Query("SELECT o FROM CashbackOperationMapping o WHERE o.cashbackTariff.id = :tariffId")
-    List<CashbackOperationMapping> findOperationMappingsByTariffId(@Param("tariffId") Long tariffId);
+    @Query("SELECT o FROM CashbackOperationMapping o WHERE o.operationType = :operationType AND o.category = :merchantCategory")
+    CashbackOperationMapping findByOperationTypeAndCategory(@Param("operationType") String operationType, @Param("merchantCategory") String merchantCategory);
 }

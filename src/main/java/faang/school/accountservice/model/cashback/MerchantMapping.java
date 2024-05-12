@@ -31,4 +31,7 @@ public class MerchantMapping {
 
     @Column(name = "cashback_percentage", nullable = false)
     private BigDecimal cashbackPercentage;
+
+    @Column(name = "category", nullable = false)
+    private String category;
 }

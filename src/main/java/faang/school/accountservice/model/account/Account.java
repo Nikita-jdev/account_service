@@ -80,4 +80,8 @@ public class Account {
     @Column(name = "version", nullable = false)
     @Version
     private Long version;
+
+    @Column(name = "cashback_tariff_id", nullable = false)
+    @OneToOne(mappedBy = "cashback_tariff")
+    private Long cashback_tariff_id;
 }

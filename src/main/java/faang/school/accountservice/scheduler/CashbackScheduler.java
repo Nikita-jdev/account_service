@@ -1,11 +1,16 @@
 package faang.school.accountservice.scheduler;
 
+import faang.school.accountservice.model.account.Account;
+import faang.school.accountservice.model.balance.Balance;
 import faang.school.accountservice.model.cashback.CashbackOperationMapping;
 import faang.school.accountservice.model.cashback.CashbackTariff;
 import faang.school.accountservice.model.cashback.MerchantMapping;
+import faang.school.accountservice.model.cashback.Transaction;
+import faang.school.accountservice.repository.AccountRepository;
 import faang.school.accountservice.repository.CashbackOperationMappingRepository;
 import faang.school.accountservice.repository.CashbackTariffRepository;
 import faang.school.accountservice.repository.MerchantMappingRepository;
+import faang.school.accountservice.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,6 +20,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -23,54 +29,56 @@ public class CashbackScheduler {
     private final CashbackTariffRepository cashbackTariffRepository;
     private final CashbackOperationMappingRepository cashbackOperationMappingRepository;
     private final MerchantMappingRepository merchantMappingRepository;
+    private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
 
 
     @Scheduled(cron = "0 0 0 1 * ?")
     public void calculateMonthlyCashback() {
-        List<CashbackTariff> tariffs = cashbackTariffRepository.findAll();
+        List<Account> accounts = accountRepository.findAll();
         ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-        for (CashbackTariff tariff : tariffs) {
+        for (Account account : accounts) {
             executor.submit(() -> {
-                List<MerchantMapping> merchantMappings = merchantMappingRepository.findMerchantMappingsByTariffId(tariff.getId());
-                List<CashbackOperationMapping> operationMappings = cashbackOperationMappingRepository.findOperationMappingsByTariffId(tariff.getId());
+                Balance totalBalance = account.getBalance();
+                BigDecimal totalCashback = BigDecimal.ZERO;
 
-                for (MerchantMapping merchantMapping : merchantMappings) {
-                    BigDecimal cashback = calculateCashback(merchantMapping.getCashbackPercentage(), merchantMapping.getAmount());
-                    // Здесь можно добавить код для начисления кэшбека на счет
+                List<Transaction> transactions = transactionRepository.findByAccountId(account.getId());
+                for (Transaction transaction : transactions) {
+                    BigDecimal transactionAmount = transaction.getAmount();
+                    String merchantId = transaction.getMerchantId();
+                    BigDecimal cashbackPercentage = calculateCashback(transactionAmount, transaction.getOperationType(), transaction.getMerchantCategory(), merchantId);
+                    BigDecimal transactionCashback = transactionAmount.multiply(cashbackPercentage).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+                    totalCashback = totalCashback.add(transactionCashback);
                 }
-
-                for (CashbackOperationMapping operationMapping : operationMappings) {
-                    BigDecimal cashback = calculateCashback(operationMapping.getCashbackPercentage(), operationMapping.getAmount());
-                    // Здесь можно добавить код для начисления кэшбека на счет
-                }
+                totalBalance.add(totalCashback);
+                accountRepository.save(account);
             });
         }
         executor.shutdown();
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
-    private BigDecimal calculateCashback(BigDecimal percentage, BigDecimal amount, String identifier) {
-        BigDecimal cashback = amount.multiply(percentage).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-
-        if ("operation".equals(identifier)) {
-            // Если есть кэшбек для продавца, сравниваем и выбираем больший
-            MerchantMapping merchantMapping = merchantMappingRepository.findByCashbackTariffIdAndMerchantId(tariff.getId(), merchantId);
-            if (merchantMapping != null) {
-                BigDecimal merchantCashback = calculateCashback(merchantMapping.getCashbackPercentage(), amount);
-                if (merchantCashback.compareTo(cashback) > 0) {
-                    cashback = merchantCashback;
-                }
-            }
-        } else if ("merchant".equals(identifier)) {
-            // Если есть кэшбек для операции, сравниваем и выбираем больший
-            CashbackOperationMapping operationMapping = cashbackOperationMappingRepository.findByCashbackTariffIdAndOperationType(tariff.getId(), operationType);
-            if (operationMapping != null) {
-                BigDecimal operationCashback = calculateCashback(operationMapping.getCashbackPercentage(), amount);
-                if (operationCashback.compareTo(cashback) > 0) {
-                    cashback = operationCashback;
-                }
+    private BigDecimal calculateCashback(BigDecimal amount, String operationType, String merchantCategory, String merchantId) {
+        BigDecimal cashback = BigDecimal.ZERO;
+        CashbackOperationMapping operationMapping = cashbackOperationMappingRepository.findByOperationTypeAndCategory(operationType, merchantCategory);
+        if (operationMapping != null) {
+            CashbackTariff tariff = operationMapping.getCashbackTariff();
+            if (tariff != null) {
+                cashback = cashback.max(operationMapping.getCashbackPercentage());
             }
         }
-        return cashback;
+        MerchantMapping merchantMapping = merchantMappingRepository.findByMerchantIdAndCategory(merchantId, merchantCategory);
+        if (merchantMapping != null) {
+            CashbackTariff tariff = merchantMapping.getCashbackTariff();
+            if (tariff != null) {
+                cashback = cashback.max(merchantMapping.getCashbackPercentage());
+            }
+        }
+        return amount.multiply(cashback).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
     }
 }

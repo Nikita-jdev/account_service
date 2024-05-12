@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface MerchantMappingRepository extends JpaRepository<MerchantMapping, Long> {
-   @Query("SELECT m FROM MerchantMapping m WHERE m.cashbackTariff.id = :tariffId")
-   List<MerchantMapping> findMerchantMappingsByTariffId(@Param("tariffId") Long tariffId);
+   @Query("SELECT m FROM MerchantMapping m WHERE m.merchantId = :merchantId AND m.category = :merchantCategory")
+   MerchantMapping findByMerchantIdAndCategory(@Param("merchantId") String merchantId, @Param("merchantCategory") String merchantCategory);
+
 }

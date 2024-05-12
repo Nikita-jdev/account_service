@@ -1,5 +1,6 @@
 package faang.school.accountservice.model.cashback;
 
+import faang.school.accountservice.model.account.Account;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,26 +13,33 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @Entity
-@Table(name = "cashback_operation_mapping")
-public class CashbackOperationMapping {
+@Table(name = "transactions")
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cashback_tariff_id", nullable = false)
-    private CashbackTariff cashbackTariff;
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
 
     @Column(name = "operation_type", nullable = false)
     private String operationType;
 
-    @Column(name = "cashback_percentage", nullable = false)
-    private BigDecimal cashbackPercentage;
+    @Column(name = "merchant_category", nullable = false)
+    private String merchantCategory;
 
-    @Column(name = "category", nullable = false)
-    private String category;
+    @Column(name = "amount", nullable = false)
+    private BigDecimal amount;
+
+    @Column(name = "merchant_id", nullable = false)
+    private String merchantId;
+
+    @Column(name = "transaction_date", nullable = false)
+    private LocalDate transactionDate;
 }
