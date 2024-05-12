@@ -5,11 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -22,7 +25,9 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)//should i put it
     @Column(name = "user_id")
     private long user_id;
+
+    @OneToMany(mappedBy = "account")
+    private List<Balance> balances;
 }
