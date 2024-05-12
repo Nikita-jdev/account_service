@@ -46,7 +46,7 @@ CREATE TABLE transactions (
 ALTER TABLE transactions
 ADD CONSTRAINT fk_account
 FOREIGN KEY (account_id)
-REFERENCES accounts(id);
+REFERENCES account(id);
 
 ALTER TABLE account
   ADD COLUMN cashback_tariff_id BIGINT;

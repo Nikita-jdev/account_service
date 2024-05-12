@@ -4,9 +4,9 @@ import faang.school.accountservice.model.cashback.CashbackOperationMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
+@Repository
 public interface CashbackOperationMappingRepository extends JpaRepository<CashbackOperationMapping, Long> {
 
     @Query("SELECT o FROM CashbackOperationMapping o WHERE o.operationType = :operationType AND o.category = :merchantCategory")

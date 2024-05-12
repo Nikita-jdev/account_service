@@ -32,7 +32,6 @@ public class CashbackScheduler {
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
 
-
     @Scheduled(cron = "0 0 0 1 * ?")
     public void calculateMonthlyCashback() {
         List<Account> accounts = accountRepository.findAll();

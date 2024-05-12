@@ -58,10 +58,6 @@ public class Balance {
     @Column(name = "version", nullable = false)
     private long version;
 
-    public void subtract(BigDecimal amountToSubtract) {
-        this.actualBalance = this.actualBalance.subtract(amountToSubtract);
-    }
-
     public void add(BigDecimal amountToAdd){
         this.actualBalance = this.actualBalance.add(amountToAdd);
     }
