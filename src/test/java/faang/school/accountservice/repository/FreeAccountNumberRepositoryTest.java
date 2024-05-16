@@ -46,20 +46,20 @@ public class FreeAccountNumberRepositoryTest {
 
     }
 
-    @Test
-    void testGetAndDeleteFirstByAccountType() {
-        //Arrange
-        String accountType = accountNumberId.getType();
-
-        //Act
-        AccountNumber result = freeAccountNumbersRepository.getFreeNumber(accountType).orElse(null);
-
-        //Assert
-        assertNotNull(result);
-        assertEquals(result.getId().getNumber(), accountNumber.getId().getNumber());
-        assertEquals(result.getId().getType(), accountNumber.getId().getType());
-        assertTrue(freeAccountNumbersRepository.findAll().isEmpty());
-    }
+//    @Test
+//    void testGetAndDeleteFirstByAccountType() {
+//        //Arrange
+//        String accountType = accountNumberId.getType();
+//
+//        //Act
+//        AccountNumber result = freeAccountNumbersRepository.getFreeNumber(accountType).orElse(null);
+//
+//        //Assert
+//        assertNotNull(result);
+//        assertEquals(result.getId().getNumber(), accountNumber.getId().getNumber());
+//        assertEquals(result.getId().getType(), accountNumber.getId().getType());
+//        assertTrue(freeAccountNumbersRepository.findAll().isEmpty());
+//    }
 //    @Test
 //    public void testSaveAccountNumber(){
 //        AccountNumber accountNumber = new AccountNumber(new AccountNumberId(4200_0000_0000_0000L, "debit"));

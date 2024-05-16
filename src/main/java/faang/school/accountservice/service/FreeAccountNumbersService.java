@@ -39,6 +39,7 @@ public class FreeAccountNumbersService {
             AccountNumber accountNumber = new AccountNumber(accountNumberId);
             accountNumbers.add(accountNumber);
         }
+        //freeAccountNumbersRepository.save(accountNumbers.get(0));
         freeAccountNumbersRepository.saveAll(accountNumbers);
     }
 
