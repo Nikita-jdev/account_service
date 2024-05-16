@@ -29,32 +29,38 @@ public class FreeAccountNumbersService{
 
     @Transactional
     public void generateAccountNumber(AccountType accountType, long bucketSize){
-        long accountNumber;
-        List<FreeAccountNumber> accountNumberList=new ArrayList<>();
+        // Increment the counter for the specified account type
         accountNumbersSequenceRepository.incrementCounter(accountType.name(), bucketSize);
-        System.out.println("\n\n=========  " + accountType.name());
-        AccountSeq period = accountNumbersSequenceRepository.getCounterValues(accountType.name(), bucketSize);//todo minus
-        System.out.println("\n\n=========  " + period);
 
-        for(long i=period.getInitialValue(); i<period.getCounter(); i++){
-            if(accountType.equals(AccountType.DEBIT)){
-                accountNumber=ACCOUNT_PATTERN_DEBIT+i;
-                accountNumberList.add(new FreeAccountNumber(new FreeAccountId(accountType, accountNumber)));
-            }else{
-                accountNumber=ACCOUNT_PATTERN_DEPO+i;
-                accountNumberList.add(new FreeAccountNumber(new FreeAccountId(accountType, accountNumber)));
-            }
-            if(accountNumber/1_0000_0000_0000L!=MAX_ACCOUNT_LEADING_DIGITS_DEBIT){ //todo: depo
-                throw new IllegalStateException("Generated account number exceeds pattern limit:");
-            }
+        // Retrieve the updated counter value after incrementing
+        AccountSeq accountSeq = accountNumbersSequenceRepository.findByType(accountType.name());
+        long initialCounter = accountSeq.getCounter() - bucketSize; // Starting point for account number generation
 
+        List<FreeAccountNumber> accountNumberList = new ArrayList<>();
+        for (long i = initialCounter; i < accountSeq.getCounter(); i++) {
+            long accountNumber;
+            if (accountType.equals(AccountType.DEBIT)) {
+                accountNumber = ACCOUNT_PATTERN_DEBIT + i;
+                if (accountNumber / 1_0000_0000_0000L != MAX_ACCOUNT_LEADING_DIGITS_DEBIT) {
+                    throw new IllegalStateException("Generated account number exceeds pattern limit.");
+                }
+            } else {
+                accountNumber = ACCOUNT_PATTERN_DEPO + i;
+                if (accountNumber / 1_0000_0000_0000L != MAX_ACCOUNT_LEADING_DIGITS_DEPO) {
+                    throw new IllegalStateException("Generated account number exceeds pattern limit.");
+                }
+            }
+            accountNumberList.add(new FreeAccountNumber(new FreeAccountId(accountType, accountNumber)));
         }
+
+        // Save the generated account numbers to the repository
         freeAccountRepository.saveAll(accountNumberList);
     }
 
+
     @Transactional
     public void retrieveAccountNumber(AccountType accountType, Consumer<FreeAccountNumber> accountNumberConsumer){
-        Optional<FreeAccountNumber> accountNumber=freeAccountRepository.retrieveFirst(accountType.name());
+        Optional<FreeAccountNumber> accountNumber = freeAccountRepository.retrieveFirst(accountType.name());
         if(accountNumber.isPresent()){
             accountNumberConsumer.accept(accountNumber.get());
         }else{

@@ -16,6 +16,4 @@ public class FreeAccountNumber{
 
     @EmbeddedId
     FreeAccountId freeAccountId;
-
-
 }

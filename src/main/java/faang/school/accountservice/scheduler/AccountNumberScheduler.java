@@ -21,7 +21,7 @@ public class AccountNumberScheduler{
         freeAccountNumbersService.generateAccountNumber(AccountType.DEBIT, bucketSize);
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void generateCreditAcc(){
         freeAccountNumbersService.generateAccountNumber(AccountType.DEPO, bucketSize);
     }

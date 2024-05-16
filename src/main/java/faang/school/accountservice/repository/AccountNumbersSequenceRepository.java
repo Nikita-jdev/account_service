@@ -5,6 +5,7 @@ import faang.school.accountservice.entity.AccountType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -21,5 +22,8 @@ public interface AccountNumbersSequenceRepository extends JpaRepository<AccountS
     FROM account_number_sequence a
     WHERE a.type = :typeString
         """)
-    AccountSeq getCounterValues(String typeString, long bucketSize);
+    AccountSeq getCounterValues(@Param(value = "typeString")String typeString, @Param(value = "bucketSize")long bucketSize);
+
+    @Query(nativeQuery = true, value = "SELECT a.* FROM account_number_sequence a WHERE a.type = :typeString")
+    AccountSeq findByType(String typeString);
 }
