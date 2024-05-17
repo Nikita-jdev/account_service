@@ -57,4 +57,8 @@ public class Balance {
     @Version
     @Column(name = "version", nullable = false)
     private long version;
+
+    public void add(BigDecimal amountToAdd){
+        this.actualBalance = this.actualBalance.add(amountToAdd);
+    }
 }

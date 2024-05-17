@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/changeset/balance_V002__create_balance.sql
   - include:
       file: db/changelog/changeset/accounts_V003__add_owner_and_balance.sql
+  - include:
+      file: db/changelog/changeset/cashback_V006__create.sql
