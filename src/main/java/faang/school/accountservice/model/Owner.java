@@ -1,4 +1,4 @@
-package faang.school.accountservice.entity;
+package faang.school.accountservice.model;
 
 import faang.school.accountservice.enums.OwnerType;
 import jakarta.persistence.*;
