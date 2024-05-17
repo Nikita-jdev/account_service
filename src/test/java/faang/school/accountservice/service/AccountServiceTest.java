@@ -30,6 +30,8 @@ public class AccountServiceTest {
     @InjectMocks
     private AccountService accountService;
     @Mock
+    private BalanceService balanceService;
+    @Mock
     private AccountMapper accountMapper;
     @Mock
     private AccountRepository accountRepository;
@@ -44,7 +46,6 @@ public class AccountServiceTest {
 
         when(accountMapper.toEntity(accountDto)).thenThrow(RuntimeException.class);
         assertThrows(RuntimeException.class, () -> accountService.open(accountDto));
-
     }
 
     @Test
