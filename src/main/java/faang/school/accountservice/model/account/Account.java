@@ -2,11 +2,13 @@ package faang.school.accountservice.model.account;
 
 import faang.school.accountservice.enums.Currency;
 import faang.school.accountservice.model.balance.Balance;
+import faang.school.accountservice.model.cashback.CashbackTariff;
 import faang.school.accountservice.model.owner.Owner;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +16,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -80,4 +83,8 @@ public class Account {
     @Column(name = "version", nullable = false)
     @Version
     private Long version;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn
+    private CashbackTariff cashback_tariff;
 }
