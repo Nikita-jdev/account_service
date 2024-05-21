@@ -1,7 +1,5 @@
-package faang.school.accountservice.controller.cashback;
+package faang.school.accountservice.model.cashback;
 
-import faang.school.accountservice.model.cashback.CashbackOperationMapping;
-import faang.school.accountservice.model.cashback.CashbackTariff;
 import faang.school.accountservice.service.cashback.CashbackTariffService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
