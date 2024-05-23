@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class BalanceService {
     private final BalanceRepository balanceRepository;
     private final BalanceMapper balanceMapper;
@@ -33,7 +32,7 @@ public class BalanceService {
         balanceRepository.save(balance);
         log.info("Created account balance: {}", account);
     }
-
+    @Transactional(readOnly = true)
     public BalanceDto getBalance(long balanceId) {
         Balance balance = getBalanceById(balanceId);
         log.info("Account balance sent: {}", balance.getAccount().getNumber());
