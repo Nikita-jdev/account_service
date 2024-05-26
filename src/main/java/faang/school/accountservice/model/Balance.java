@@ -1,5 +1,6 @@
 package faang.school.accountservice.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,19 +34,19 @@ public class Balance {
     @OneToOne
     @JoinColumn(name = "account_id")
     private Account account;
-    @JoinColumn(name = "authorizationbalance",nullable = false)
+    @Column(name = "authorizationbalance",nullable = false)
     private BigDecimal authorizationBalance;
-    @JoinColumn(name = "actualbalance",nullable = false)
+    @Column(name = "actualbalance",nullable = false)
     private BigDecimal actualBalance;
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @JoinColumn(name = "create_At")
+    @Column(name = "create_At")
     private Instant createAt;
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @JoinColumn(name = "update_At")
+    @Column(name = "update_At")
     private Instant updateAt;
     @Version
-    @JoinColumn(name = "version")
+    @Column(name = "version")
     private long version;
 }

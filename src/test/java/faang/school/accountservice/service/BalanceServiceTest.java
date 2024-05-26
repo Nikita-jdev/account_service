@@ -45,12 +45,6 @@ public class BalanceServiceTest {
     }
 
     @Test
-    public void createBalanceTest() {
-        balanceService.createBalance(account);
-        //verify(balanceRepository, times(1)).save();
-    }
-
-    @Test
     public void WriteOffClearingBalanceTest() {
         BalanceDto balanceDto = BalanceDto.builder()
                 .accountNumber("1234")
@@ -61,7 +55,7 @@ public class BalanceServiceTest {
                 .authorizationBalance(new BigDecimal(300)).build();
 
         when(balanceRepository.findByAccountNumber(anyString())).thenReturn(balance);
-        Assertions.assertEquals(correctBalance, balanceService.WriteOffClearingBalance(balanceDto));
+        Assertions.assertEquals(correctBalance, balanceService.writeOffClearingBalance(balanceDto));
     }
 
     @Test

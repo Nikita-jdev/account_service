@@ -22,9 +22,9 @@ public class BalanceController {
         balanceService.createBalance(account);
     }
 
-    @PutMapping("/WriteOffClearing")
-    public BalanceDto WriteOffClearingBalance(@RequestBody BalanceDto balanceDto) {
-        return balanceService.WriteOffClearingBalance(balanceDto);
+    @PutMapping("/writeOffClearing")
+    public BalanceDto writeOffClearingBalance(@RequestBody BalanceDto balanceDto) {
+        return balanceService.writeOffClearingBalance(balanceDto);
     }
 
     @GetMapping
