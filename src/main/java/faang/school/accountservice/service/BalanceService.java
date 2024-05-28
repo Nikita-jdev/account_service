@@ -5,6 +5,7 @@ import faang.school.accountservice.mapper.BalanceMapper;
 import faang.school.accountservice.model.Account;
 import faang.school.accountservice.model.Balance;
 import faang.school.accountservice.repository.BalanceRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -32,6 +33,7 @@ public class BalanceService {
         balanceRepository.save(balance);
         log.info("Created account balance: {}", account);
     }
+
     @Transactional(readOnly = true)
     public BalanceDto getBalance(long balanceId) {
         Balance balance = getBalanceById(balanceId);
@@ -42,9 +44,9 @@ public class BalanceService {
     @Transactional
     @Retryable(retryFor = OptimisticLockingFailureException.class, backoff = @Backoff(delay = 3000L))
     public BalanceDto writeOffClearingBalance(BalanceDto balanceDto) {
-        Balance updateBalance = balanceMapper.toEntity(balanceDto);
+        Balance updatedBalance = balanceMapper.toEntity(balanceDto);
         Balance balance = getBalanceByNumber(balanceDto.getAccountNumber());
-        balance.setActualBalance(balance.getActualBalance().subtract(updateBalance.getActualBalance()));
+        balance.setActualBalance(balance.getActualBalance().subtract(updatedBalance.getActualBalance()));
         log.info("Account balance: {} update clearing", balance.getAccount().getNumber());
         return balanceMapper.toDto(balance);
     }
@@ -69,8 +71,8 @@ public class BalanceService {
     @Transactional
     @Retryable(retryFor = OptimisticLockingFailureException.class, backoff = @Backoff(delay = 3000L))
     public BalanceDto addingToBalance(BalanceDto balanceDto) {
-        Balance updateBalance = balanceMapper.toEntity(balanceDto);
-        BigDecimal updateActualBalance = updateBalance.getActualBalance();
+        Balance updatedBalance = balanceMapper.toEntity(balanceDto);
+        BigDecimal updateActualBalance = updatedBalance.getActualBalance();
         Balance balance = getBalanceByNumber(balanceDto.getAccountNumber());
 
         balance.setActualBalance(balance.getActualBalance().add(updateActualBalance));
@@ -80,14 +82,15 @@ public class BalanceService {
     }
 
     @Transactional
-    public void ComparisonOfBalances(String number) {
+    public void comparisonOfBalances(String number) {
         Balance balance = getBalanceByNumber(number);
         balance.setAuthorizationBalance(balance.getActualBalance());
         balanceRepository.save(balance);
     }
 
     private Balance getBalanceById(long id) {
-        return balanceRepository.findById(id);
+        return balanceRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Balance with the specified id: " + id + " not found"));
     }
 
     private Balance getBalanceByNumber(String number) {

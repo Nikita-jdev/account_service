@@ -1,5 +1,6 @@
 package faang.school.accountservice.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +14,6 @@ import java.math.BigDecimal;
 public class BalanceDto {
     private BigDecimal actualBalance;
     private BigDecimal authorizationBalance;
+    @NotNull
     private String accountNumber;
 }

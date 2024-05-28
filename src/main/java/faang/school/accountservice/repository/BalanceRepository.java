@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BalanceRepository extends JpaRepository<Balance,Long> {
-    Balance findById(long balanceId);
     Balance findByAccountNumber(String accountNumber);
 }

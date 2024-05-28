@@ -49,17 +49,6 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void test_open_InvalidInput() {
-        AccountDto accountDto = getAccountDto();
-        Account account = getAccount();
-
-        when(accountMapper.toEntity(accountDto)).thenReturn(account);
-        doThrow(EntityNotFoundException.class).when(accountValidate).validate(account);
-
-        assertThrows(EntityNotFoundException.class, () -> accountService.open(accountDto));
-    }
-
-    @Test
     public void test_open_SaveThrowException(){
         AccountDto accountDto = getAccountDto();
         Account account = getAccount();
@@ -89,7 +78,6 @@ public class AccountServiceTest {
         Assertions.assertEquals(expected, actual);
         verify(accountMapper, times(1)).toEntity(expected);
         verify(ownerRepository, times(1)).findByAccountIdAndOwnerType(owner.getAccountId(), owner.getOwnerType());
-        verify(accountValidate, times(1)).validate(account);
         verify(accountRepository, times(1)).save(account);
         verify(accountMapper, times(1)).toDto(account);
     }

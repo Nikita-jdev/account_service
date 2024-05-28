@@ -34,18 +34,23 @@ public class Balance {
     @OneToOne
     @JoinColumn(name = "account_id")
     private Account account;
-    @Column(name = "authorizationbalance",nullable = false)
+
+    @Column(name = "authorization_Balance", nullable = false)
     private BigDecimal authorizationBalance;
-    @Column(name = "actualbalance",nullable = false)
+
+    @Column(name = "actual_Balance", nullable = false)
     private BigDecimal actualBalance;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_At")
+    @Column(name = "create_at")
     private Instant createAt;
+
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "update_At")
+    @Column(name = "update_at")
     private Instant updateAt;
+
     @Version
     @Column(name = "version")
     private long version;

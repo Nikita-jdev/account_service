@@ -45,7 +45,7 @@ public class BalanceServiceTest {
     }
 
     @Test
-    public void WriteOffClearingBalanceTest() {
+    public void writeOffClearingBalanceTest() {
         BalanceDto balanceDto = BalanceDto.builder()
                 .accountNumber("1234")
                 .actualBalance(new BigDecimal(100.0)).build();
@@ -78,12 +78,13 @@ public class BalanceServiceTest {
                 .account(account)
                 .id(2)
                 .actualBalance(new BigDecimal(100))
-                .authorizationBalance(BigDecimal.valueOf(90))
+                .authorizationBalance(new BigDecimal(90))
                 .build();
 
         BalanceDto balanceDto = BalanceDto.builder()
                 .accountNumber("1234")
-                .actualBalance(new BigDecimal(100.0)).build();
+                .actualBalance(new BigDecimal(100.0))
+                .authorizationBalance(new BigDecimal(100)).build();
 
         when(balanceRepository.findByAccountNumber(anyString())).thenReturn(balanceLittle);
         Assertions.assertThrows(IllegalArgumentException.class, () -> balanceService.writeOffAuthorizationBalance(balanceDto));
@@ -104,11 +105,11 @@ public class BalanceServiceTest {
     }
 
     @Test
-    public void ComparisonOfBalancesTest() {
+    public void comparisonOfBalancesTest() {
         Balance balanceNotEquals = Balance.builder()
                 .actualBalance(new BigDecimal(100))
                 .authorizationBalance(new BigDecimal(110)).build();
         when(balanceRepository.findByAccountNumber(anyString())).thenReturn(balance);
-        Assertions.assertDoesNotThrow(() -> balanceService.ComparisonOfBalances("1234"));
+        Assertions.assertDoesNotThrow(() -> balanceService.comparisonOfBalances("1234"));
     }
 }
